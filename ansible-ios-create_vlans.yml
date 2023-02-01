@@ -9,5 +9,5 @@
       config:
       - name {{ item.name }}
       - vlan_id {{ item.vlan }}
-    loop: "{{ ios_vlans | dict2items }}"
+    with_dict: "{{ ios_vlans }}"
 
