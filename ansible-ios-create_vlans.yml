@@ -9,4 +9,4 @@
       commands:
       - vlan {{ item.vlan }}
       - name {{ item.name }}
-  loop: "{{ ios_vlans }}"
+    loop: "{{ ios_vlans }}"
