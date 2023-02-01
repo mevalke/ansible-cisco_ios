@@ -1,0 +1,12 @@
+---
+- name: Create one or multiple VLANs 
+  hosts: all
+  gather_facts: false
+  connection: local
+  tasks:
+  - name: Run vlan command 
+    ios_command:
+      commands:
+      - vlan {{ item.vlan }}
+      - name {{ item.name }}
+  loop: "{{ ios_vlans }}"
