@@ -7,8 +7,5 @@
   tasks:
   - name: Run vlan command 
     cisco.ios.ios_vlans:
-      config:
-      - name {{ item.name }}
-      - vlan_id {{ item.vlan }}
-    loop: "{{ ios_vlans }}"
+      config: "{{ ios_vlans }}" 
 

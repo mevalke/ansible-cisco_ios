@@ -1,5 +1,5 @@
 ios_vlans:
 - name: lan
-  vlan: 100
+  vlan_id: 100
 - name: dmz
-  vlan: 200
+  vlan_id: 200
