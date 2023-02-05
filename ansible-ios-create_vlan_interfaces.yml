@@ -6,10 +6,9 @@
   connection: local
   tasks:
   - name: Create VLAN interface
-    cisco.ios.ios_l3_interfaces:
-      config:
-      - name: "{{ item.name }}"
-        ipv4:
-        - address: "{{ item.ip }}"
-          secondary: false
+    cisco.ios.ios_config:
+      lines:
+      - inerface "{{ item.name }}"
+      - ip address "{{ item.ip }}"
+    when: "{{ switch }} in inventory_hostname"  
     loop: "{{ ios_vlan_interfaces }}"
