@@ -9,14 +9,14 @@ ios_vlans:
   vlan_id: 600
 ios_vlan_interfaces:
 - name: vlan 100
-  ip: 10.223.100.11 255.255.255.0
+  ip: 10.223.100.11/24
   switch: sw1
 - name: vlan 200
-  ip: 10.223.200.11 255.255.255.0
+  ip: 10.223.200.11/24
   switch: sw1
 - name: vlan 100
-  ip: 10.223.100.12 255.255.255.0
+  ip: 10.223.100.12/24
   switch: sw2
 - name: vlan 200
-  ip: 10.223.200.12 255.255.255.0
+  ip: 10.223.200.12/24
   switch: sw2
