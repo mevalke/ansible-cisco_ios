@@ -8,7 +8,7 @@
   - name: Create VLAN interface
     cisco.ios.ios_config:
       lines:
-      - inerface "{{ item.name }}"
-      - ip address "{{ item.ip }}"
+      - interface {{ item.name }}
+      - ip address {{ item.ip }}
     when: inventory_hostname == "{{ item.switch }}"
     loop: "{{ ios_vlan_interfaces }}"
