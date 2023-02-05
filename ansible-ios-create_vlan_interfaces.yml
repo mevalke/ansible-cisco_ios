@@ -7,8 +7,9 @@
   tasks:
   - name: Create VLAN interface
     cisco.ios.ios_config:
+      parents: interface {{ item.name }}
       lines:
-      - interface vlan {{ item.vlan }}
       - ip address {{ item.ip }}
     when: inventory_hostname == "{{ item.switch }}"
     loop: "{{ ios_vlan_interfaces }}"
+
