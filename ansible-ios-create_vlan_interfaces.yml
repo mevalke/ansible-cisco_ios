@@ -1,0 +1,15 @@
+---
+- name: Create one or multiple VLAN interfaces
+  hosts: all
+  vars_files: vars.yml
+  gather_facts: false
+  connection: local
+  tasks:
+  - name: Create VLAN interface
+    cisco.ios.ios_l3_interfaces:
+      config:
+      - name: "{{ item.name }}"
+        ipv4:
+        - address: "{{ item.ip }}"
+          secondary: false
+    loop: "{{ ios_vlan_interfaces }}"
