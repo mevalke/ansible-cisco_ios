@@ -10,5 +10,5 @@
       lines:
       - inerface "{{ item.name }}"
       - ip address "{{ item.ip }}"
-    when: "{{ item.switch }} in inventory_hostname"  
+    when: inventory_hostname == "{{ item.switch }}"
     loop: "{{ ios_vlan_interfaces }}"
