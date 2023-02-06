@@ -7,7 +7,7 @@ ios_vlans:
   vlan_id: 252
 - name: wan
   vlan_id: 600
-ios_name_interfaces:
+ios_vlan_interfaces:
 - name: vlan100
   ip: 10.223.100.11 255.255.255.0
   switch: sw1
