@@ -1,22 +1,22 @@
-ios_names:
-- name: lanvlan100
-  name_id: vlan100
-- name: dmzvlan200
-  name_id: vlan200
+ios_vlans:
+- name: lan
+  vlan_id: vlan100
+- name: dmz
+  vlan_id: vlan200
 - name: mgmt252
-  name_id: 252
+  vlan_id: 252
 - name: wan
-  name_id: 600
+  vlan_id: 600
 ios_name_interfaces:
 - name: vlan100
-  ip: 10.223.vlan100.11 255.255.255.0
+  ip: 10.223.100.11 255.255.255.0
   switch: sw1
 - name: vlan200
-  ip: 10.223.vlan200.11 255.255.255.0
+  ip: 10.223.200.11 255.255.255.0
   switch: sw1
 - name: vlan100
-  ip: 10.223.vlan100.12 255.255.255.0
+  ip: 10.223.100.12 255.255.255.0
   switch: sw2
 - name: vlan200
-  ip: 10.223.vlan200.12 255.255.255.0
+  ip: 10.223.200.12 255.255.255.0
   switch: sw2
