@@ -1,8 +1,8 @@
 ios_vlans:
-- name: lan
-  vlan_id: vlan100
-- name: dmz
-  vlan_id: vlan200
+- name: lan100
+  vlan_id: 100
+- name: dmz200
+  vlan_id: 200
 - name: mgmt252
   vlan_id: 252
 - name: wan
