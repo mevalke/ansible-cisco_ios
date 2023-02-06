@@ -20,7 +20,9 @@
   tasks:
   - name: Create VLAN interface
     cisco.ios.ios_l3_interfaces:
-      name: "{{ item.name }}"
-      ipv4: "{{ item.ip }}"
+      config:
+      - name: "{{ item.name }}"
+        ipv4:
+        - address: "{{ item.ip }}"
     when: inventory_hostname == "{{ item.switch }}"
     loop: "{{ ios_vlan_interfaces }}"
