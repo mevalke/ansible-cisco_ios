@@ -19,7 +19,7 @@
   connection: local
   tasks:
   - name: Create VLAN interface
-    ios_l3_interface:
+    cisco.ios.ios_l3_interfaces:
       name: "{{ item.name }}"
       ipv4: "{{ item.ip }}"
     when: inventory_hostname == "{{ item.switch }}"
