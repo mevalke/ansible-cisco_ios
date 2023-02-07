@@ -18,5 +18,5 @@
   handlers:
   - name: Write Config
     cisco.ios.ios_command:
-      lines:
+      commands:
       - write
