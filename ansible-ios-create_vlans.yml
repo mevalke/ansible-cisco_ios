@@ -5,7 +5,7 @@
   gather_facts: false
   connection: local
   tasks:
-  - name: Run vlan command 
+  - name: Create VLAN
     cisco.ios.ios_vlans:
       config: "{{ ios_vlans }}" 
 
