@@ -12,5 +12,11 @@
       lines:
       - ip address {{ item.ip }}
       - no shutdown
+      notify: "Write Config"
     when: inventory_hostname == "{{ item.switch }}"
     loop: "{{ ios_vlan_interfaces }}"
+  handlers:
+  - name: Write Config
+    cisco.ios.ios_command:
+      lines:
+      - write
