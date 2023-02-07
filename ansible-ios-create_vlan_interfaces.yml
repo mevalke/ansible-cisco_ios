@@ -12,7 +12,7 @@
       lines:
       - ip address {{ item.ip }}
       - no shutdown
-      notify: "Write Config"
+    notify: "Write Config"
     when: inventory_hostname == "{{ item.switch }}"
     loop: "{{ ios_vlan_interfaces }}"
   handlers:
