@@ -12,11 +12,11 @@ ios_vlan_interfaces:
   ip: 10.223.100.11 255.255.255.0
   switch: sw1
   hsrp: 150
-- name: dmz200
+- name: vlan200
   ip: 10.223.200.11 255.255.255.0
   switch: sw1
   hsrp: 150
-- name: mgmt252
+- name: vlan252
   ip: 10.223.252.11 255.255.255.0
   switch: sw1
   hsrp: 150
@@ -24,11 +24,11 @@ ios_vlan_interfaces:
   ip: 10.223.100.12 255.255.255.0
   switch: sw2
   hsrp: 100
-- name: dmz200
+- name: vlan200
   ip: 10.223.200.12 255.255.255.0
   switch: sw2
   hsrp: 100
-- name: mgmt252
+- name: vlan252
   ip: 10.223.252.12 255.255.255.0
   switch: sw2
   hsrp: 100
