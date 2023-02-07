@@ -11,5 +11,5 @@
   - name: Write Config
     cisco.ios.ios_config:
       lines:
-      - copy run start
+      - do copy run start
 
