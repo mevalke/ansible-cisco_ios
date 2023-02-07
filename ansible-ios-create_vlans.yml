@@ -8,8 +8,10 @@
   - name: Create VLAN
     cisco.ios.ios_vlans:
       config: "{{ ios_vlans }}" 
+    notify: "Write Config"
+  handlers:
   - name: Write Config
-    cisco.ios.ios_config:
+    cisco.ios.ios_command:
       lines:
-      - do copy run start
+      - write
 
