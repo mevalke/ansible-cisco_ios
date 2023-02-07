@@ -13,6 +13,7 @@
       - standby 1 priority {{ item.hsrp }}
       - standby 1 preempt
     notify: "Write Config"
+    when: inventory_hostname == "{{ item.switch }}"
     loop: "{{ ios_vlan_interfaces }}"
   handlers:
   - name: Write Config
