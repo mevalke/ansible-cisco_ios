@@ -10,7 +10,7 @@
       parents: interface {{ item.name }}
       lines:
       - standby 1 ip {{ item.ip.split('.')[0] }}.{{ item.ip.split('.')[1] }}.{{ item.ip.split('.')[2] }}.254
-      - standby 1 priority {{ hsrp }}
+      - standby 1 priority {{ item.hsrp }}
       - standby 1 preempt
     notify: "Write Config"
     loop: "{{ ios_vlan_interfaces }}"
