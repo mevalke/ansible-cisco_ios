@@ -13,7 +13,7 @@
       - standby 1 priority {{ hsrp }}
       - standby 1 preempt
     notify: "Write Config"
-    loop: "{{ cisco_ios_vlans }}"
+    loop: "{{ ios_vlan_interfaces }}"
   handlers:
   - name: Write Config
     cisco.ios.ios_command:
