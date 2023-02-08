@@ -4,6 +4,9 @@
   vars_files: vars.yml
   gather_facts: false
   connection: local
+  vars:
+    allowed_vlans: []
+    tagged_vlans: "{{ ios_vlans | selectattr('tagged','==', true ) }}"
   tasks:
   - name: Configure standby
     cisco.ios.ios_config:
@@ -15,7 +18,22 @@
     notify: "Write Config"
     when: inventory_hostname == "{{ item.switch }}"
     loop: "{{ ios_vlan_interfaces }}"
-  handlers:
+
+  - name: Construct list of allowed vlans
+    set_fact:
+      allowed_vlans: "{{ allowed_vlans + [ item.vlan_id ] }}"
+    loop: "{{ tagged_vlans }}"
+
+  - name: Configure trunk
+    cisco.ios.ios_l2_interfaces:
+      config:
+        - name: "{{ hsrp_trunk_port }}"
+          trunk:
+            allowed_vlans: "{{ allowed_vlans }}"
+            encapsulation: dot1q
+    notify: "Write Config"
+
+  handlers: 
   - name: Write Config
     cisco.ios.ios_command:
       commands:

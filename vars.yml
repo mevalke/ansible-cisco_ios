@@ -1,12 +1,16 @@
 ios_vlans:
 - name: lan100
   vlan_id: 100
+  tagged: true
 - name: dmz200
   vlan_id: 200
+  tagged: true
 - name: mgmt252
   vlan_id: 252
+  tagged: true
 - name: wan
   vlan_id: 600
+  tagged: false
 ios_vlan_interfaces:
 - name: vlan100
   ip: 10.223.100.11 255.255.255.0
@@ -32,3 +36,4 @@ ios_vlan_interfaces:
   ip: 10.223.252.12 255.255.255.0
   switch: sw2
   hsrp: 100
+hsrp_trunk_port: GigabitEthernet0/0
