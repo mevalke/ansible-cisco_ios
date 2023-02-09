@@ -8,6 +8,11 @@
     allowed_vlans: []
     tagged_vlans: "{{ ios_vlans | selectattr('tagged','==', true ) }}"
   tasks:
+  - name: Construct list of allowed vlans
+    set_fact:
+      allowed_vlans: "{{ allowed_vlans + [ item.vlan_id ] }}"
+    loop: "{{ tagged_vlans }}"
+
   - name: Configure trunk ports
     cisco.ios.ios_l2_interfaces:
       config:
