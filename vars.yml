@@ -38,43 +38,43 @@ ios_vlan_interfaces:
   hsrp: 100
 hsrp_trunk_port: GigabitEthernet0/0
 ios_l2_port_type: GigabitEthernet
-ios_l2_trunk_ports:
-- switch: sw1
-  port: 0/1
-- switch: sw1
-  port: 1/0
-- switch: sw1
-  port: 2/1
-- switch: sw1
-  port: 3/1
-- switch: sw2
-  port: 0/1
-- switch: sw2
-  port: 1/0
-- switch: sw2
-  port: 2/2
-- switch: sw2
-  port: 3/2
-- switch: sw3
-  port: 0/1
-- switch: sw3
-  port: 2/1
-- switch: sw3
-  port: 2/2
-- switch: sw3
-  port: 0/3
-- switch: sw4
-  port: 0/1
-- switch: sw4
-  port: 3/1
-- switch: sw4
-  port: 3/2
-- switch: sw4
-  port: 0/3
-ios_l2_access_ports:
-- switch: sw1
-  port: 1/1
-  vlan: 252
-- switch: sw2
-  port: 1/2
-  vlan: 252
+# ios_l2_trunk_ports:
+# - switch: sw1
+  # port: 0/1
+# - switch: sw1
+  # port: 1/0
+# - switch: sw1
+  # port: 2/1
+# - switch: sw1
+  # port: 3/1
+# - switch: sw2
+  # port: 0/1
+# - switch: sw2
+  # port: 1/0
+# - switch: sw2
+  # port: 2/2
+# - switch: sw2
+  # port: 3/2
+# - switch: sw3
+  # port: 0/1
+# - switch: sw3
+  # port: 2/1
+# - switch: sw3
+  # port: 2/2
+# - switch: sw3
+  # port: 0/3
+# - switch: sw4
+  # port: 0/1
+# - switch: sw4
+  # port: 3/1
+# - switch: sw4
+  # port: 3/2
+# - switch: sw4
+  # port: 0/3
+# ios_l2_access_ports:
+# - switch: sw1
+  # port: 1/1
+  # vlan: 252
+# - switch: sw2
+  # port: 1/2
+  # vlan: 252

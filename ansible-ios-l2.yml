@@ -16,12 +16,13 @@
   - name: Configure trunk ports
     cisco.ios.ios_l2_interfaces:
       config:
-      - name: "{{ ios_l2_port_type}}{{ item.port }}"
+      - name: "{{ ios_l2_port_type}}{{ item}}"
         trunk:
           allowed_vlans: "{{ allowed_vlans }}"
           encapsulation: dot1q
       state: replaced
-    when: inventory_hostname == "{{ item.switch }}"
+    when: ios_l2_trunk_ports
+#    when: inventory_hostname == "{{ item.switch }}"
     loop: "{{ ios_l2_trunk_ports }}"
     notify: "Write Config"
 
@@ -32,7 +33,8 @@
         mode: access
         access:
           vlan: "{{ item.vlan }}"
-    when: inventory_hostname == "{{ item.switch }}"
+    when: ios_l2_access_ports
+ #   when: inventory_hostname == "{{ item.switch }}"
     loop: "{{ ios_l2_access_ports }}"
     notify: "Write Config"
 
