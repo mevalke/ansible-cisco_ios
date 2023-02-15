@@ -10,7 +10,7 @@
       parents:
       - interface vlan {{ item.id }}
       lines:
-      - "ip address {{ item.subnet.split('.')[0] }}.{{ item.subnet.split('.')[1] }}.{{ item.subnet.split('.')[2] }}.{{ vars[inventory_hostname]+'_ip' }}  {{ item.mask }}"
+      - "ip address {{ item.subnet.split('.')[0] }}.{{ item.subnet.split('.')[1] }}.{{ item.subnet.split('.')[2] }}.{{ vars[inventory_hostname+'_ip'] }}  {{ item.mask }}"
       - no shutdown
     notify: "Write Config"
     loop: "{{ global_vlans }}"
