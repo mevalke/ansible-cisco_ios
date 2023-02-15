@@ -13,7 +13,7 @@
       - "ip address {{ item.subnet.split('.')[0] }}.{{ item.subnet.split('.')[1] }}.{{ item.subnet.split('.')[2] }}.{{ vars[inventory_hostname+'_ip'] }}  {{ item.mask }}"
       - no shutdown
     notify: "Write Config"
-    loop: "{{ global_vlans }}"
+    loop: "{{ global_tagged_vlans }}"
   handlers:
   - name: Write Config
     cisco.ios.ios_command:
