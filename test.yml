@@ -12,4 +12,10 @@
       parents:
       - vlan {{ item.id }}
     loop: "{{ global_vlans }}"
+    notify: "Write Config"
 
+  handlers:
+  - name: Write Config
+    cisco.ios.ios_command:
+      commands:
+      - write
