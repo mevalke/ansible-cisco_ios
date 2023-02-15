@@ -1,20 +1,19 @@
 ---
 - name: Create one or multiple VLAN interfaces
   hosts: all
-  vars_files: vars.yml
+  vars_files: ios_vars.yml
   gather_facts: false
   connection: local
   tasks:
   - name: Create VLAN interface
     cisco.ios.ios_config:
-      parents: 
-      - interface {{ item.name }}
+      parents:
+      - interface vlan {{ item.id }}
       lines:
-      - ip address {{ item.ip }}
+      - "ip address {{ item.subnet.split('.')[0] }}.{{ item.subnet.split('.')[1] }}.{{ item.subnet.split('.')[2] }}.{{ vars[inventory_hostname]+'_ip' }}  {{ item.mask }}"
       - no shutdown
     notify: "Write Config"
-    when: inventory_hostname == "{{ item.switch }}"
-    loop: "{{ ios_vlan_interfaces }}"
+    loop: "{{ global_vlans }}"
   handlers:
   - name: Write Config
     cisco.ios.ios_command:
