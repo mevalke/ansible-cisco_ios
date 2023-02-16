@@ -1,38 +1,25 @@
+# Trunk to HA pair needs to be configured using the L2 Interface playbook
 ---
 - name: Configure HSRP on core switches
   hosts: all
-  vars_files: vars.yml
+  vars_files: ios_vars.yml
   gather_facts: false
   connection: local
-  vars:
-    allowed_vlans: []
-    tagged_vlans: "{{ ios_vlans | selectattr('tagged','==', true ) }}"
   tasks:
-  - name: Configure standby
-    cisco.ios.ios_config:
-      parents: interface {{ item.name }}
-      lines:
-      - standby 1 ip {{ item.ip.split('.')[0] }}.{{ item.ip.split('.')[1] }}.{{ item.ip.split('.')[2] }}.254
-      - standby 1 priority {{ item.hsrp }}
-      - standby 1 preempt
-    notify: "Write Config"
-    when: inventory_hostname == "{{ item.switch }}"
-    loop: "{{ ios_vlan_interfaces }}"
-
   - name: Construct list of allowed vlans
     set_fact:
-      allowed_vlans: "{{ allowed_vlans + [ item.vlan_id ] }}"
-    loop: "{{ tagged_vlans }}"
+      global_allowed_vlans: "{{ global_allowed_vlans + [ item.id ] }}"
+    loop: "{{ global_tagged_vlans }}"
 
-  - name: Configure trunk
-    cisco.ios.ios_l2_interfaces:
-      config:
-        - name: "{{ hsrp_trunk_port }}"
-          trunk:
-            allowed_vlans: "{{ allowed_vlans }}"
-            encapsulation: dot1q
-      state: replaced
+  - name: Configure standby
+    cisco.ios.ios_config:
+      parents: interface vlan {{ item.id }}
+      lines:
+      - standby 1 ip {{ item.subnet.split('.')[0] }}.{{ item.subnet.split('.')[1] }}.{{ item.subnet.split('.')[2] }}.254
+      - standby 1 priority {{ vars[ inventory_hostname+'_hsrp' ] }}
+      - standby 1 preempt
     notify: "Write Config"
+    loop: "{{ global_vlans }}"
 
   handlers: 
   - name: Write Config
