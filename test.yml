@@ -8,7 +8,7 @@
   tasks:
   - name: Construct list of allowed vlans
     set_fact:
-      global_allowed_vlans: "{{ global_allowed_vlans + [ item.vlan_id ] }}"
+      global_allowed_vlans: "{{ global_allowed_vlans + [ item.id ] }}"
     loop: "{{ global_tagged_vlans }}"
 
   - name: Configure standby
