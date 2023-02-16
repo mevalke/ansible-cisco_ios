@@ -50,6 +50,14 @@
     sw4_used_ports: []
     sw1_tagged_ports: "{{ sw1_interfaces | selectattr('mode','==','trunk') }}"
     sw1_untagged_ports: "{{ sw1_interfaces | selectattr('mode','==','access') }}"
+    sw2_tagged_ports: "{{ sw2_interfaces | selectattr('mode','==','trunk') }}"
+    sw2_untagged_ports: "{{ sw2_interfaces | selectattr('mode','==','access') }}"
+    sw3_tagged_ports: "{{ sw3_interfaces | selectattr('mode','==','trunk') }}"
+    sw3_untagged_ports: "{{ sw3_interfaces | selectattr('mode','==','access') }}"
+    sw4_tagged_ports: "{{ sw4_interfaces | selectattr('mode','==','trunk') }}"
+    sw4_untagged_ports: "{{ sw4_interfaces | selectattr('mode','==','access') }}"
+    sw1_hsrp: 150
+    sw2_hsrp: 100
     sw1_interfaces:
     - name: 0/0
       desc: description sw2 hsrp

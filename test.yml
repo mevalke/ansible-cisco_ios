@@ -1,20 +1,27 @@
+# Trunk to HA pair needs to be configured using the L2 Interface playbook
 ---
-- name: Create one or multiple VLANs 
+- name: Configure HSRP on core switches
   hosts: all
   vars_files: ios_vars.yml
   gather_facts: false
   connection: local
   tasks:
-  - name: Create VLAN
-    cisco.ios.ios_config:
-      lines:
-      - name {{ item.name }}
-      parents:
-      - vlan {{ item.id }}
-    loop: "{{ global_vlans }}"
-    notify: "Write Config"
+  - name: Construct list of allowed vlans
+    set_fact:
+      global_allowed_vlans: "{{ global_allowed_vlans + [ item.vlan_id ] }}"
+    loop: "{{ global_tagged_vlans }}"
 
-  handlers:
+  - name: Configure standby
+    cisco.ios.ios_config:
+      parents: interface vlan {{ item.id }}
+      lines:
+      - standby 1 ip {{ item.subnet.split('.')[0] }}.{{ item.subnet.split('.')[1] }}.{{ item.subnet.split('.')[2] }}.254
+      - standby 1 priority {{ vars[ inventory_hostname+'_hsrp' ] }}
+      - standby 1 preempt
+    notify: "Write Config"
+    loop: "{{ global_vlans }}"
+
+  handlers: 
   - name: Write Config
     cisco.ios.ios_command:
       commands:
