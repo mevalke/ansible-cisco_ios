@@ -1,28 +1,36 @@
-# Trunk to HA pair needs to be configured using the L2 Interface playbook
 ---
-- name: Configure HSRP on core switches
+- name: Configure L2 interfaces on IOS switches
   hosts: all
   vars_files: ios_vars.yml
   gather_facts: false
   connection: local
   tasks:
-  - name: Construct list of allowed vlans
-    set_fact:
-      global_allowed_vlans: "{{ global_allowed_vlans + [ item.id ] }}"
-    loop: "{{ global_tagged_vlans }}"
-
-  - name: Configure standby
+  - name: Configure interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }} as trunk
     cisco.ios.ios_config:
-      parents: interface vlan {{ item.id }}
-      lines:
-      - standby 1 ip {{ item.subnet.split('.')[0] }}.{{ item.subnet.split('.')[1] }}.{{ item.subnet.split('.')[2] }}.254
-      - standby 1 priority {{ vars[ inventory_hostname+'_hsrp' ] }}
-      - standby 1 preempt
+      parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
+      lines: "{{ global_tagged_port_conf }} + {{ item.port_conf + [ item.desc ] }}"
     notify: "Write Config"
-    loop: "{{ global_vlans }}"
+    loop: "{{ vars[ inventory_hostname+'_tagged_ports' ] }}"
 
-  handlers: 
-  - name: Write Config
-    cisco.ios.ios_command:
-      commands:
-      - write
+      
+  - name: Configure allowed vlans on {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
+    cisco.ios.ios_config:
+      parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
+      lines:
+      - switchport trunk allowed vlans {{ global_allowed_vlans | join(',') }}
+    notify: "Write Config"
+    loop: "{{ vars[ inventory_hostname+'_tagged_ports' ] }}"
+      
+  - name: Configure interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }} as access port
+    cisco.ios.ios_config:
+      parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
+      lines: interface {{ sw1_switch_interface_prefix }}{{ item }} shutdown
+    notify: "Write Config"
+    loop: "{{ vars[ inventory_hostname+'_untagged_ports' ] }}"
+      
+  - name: Admin shut interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
+    cisco.ios.ios_config:
+      parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
+      lines: "{{ global_untagged_port_conf }} + {{ item.port_conf + [item.desc] }}"
+    notify: "Write Config"
+    loop: "{{ vars[ inventory_hostname+'_untagged_ports' ] }}"
