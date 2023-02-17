@@ -36,15 +36,15 @@
       # lines: "{{ global_untagged_port_conf }} + {{ item.port_conf + [item.desc] }}"
     # notify: "Write Config"
     # loop: "{{ vars[ inventory_hostname+'_interfaces' ] }}"
-  - name: get the sw_untagged_ports content:
+  - name: get the sw_untagged_ports content
     debug:
       msg: sw_untagged_ports content: {{ vars[ inventory_hostname+'_untagged_ports' ] }}
-  - name: get the sw_untagged_ports type:
+  - name: get the sw_untagged_ports type
     debug:
       msg: sw_untagged_ports type: {{ vars[ inventory_hostname+'_untagged_ports' ] | type_debug }}
-  - name: get the local_untagged_ports content:
+  - name: get the local_untagged_ports content
     debug:
       msg: local_tagged_ports: {{ local_tagged_ports ] }}
-  - name: get the local_tagged_ports type:
+  - name: get the local_tagged_ports type
     debug:
       msg: local_tagged_ports type: {{ local_tagged_ports ] | type_debug }}
