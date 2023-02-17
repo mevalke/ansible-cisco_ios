@@ -48,14 +48,8 @@
     sw2_used_ports: []
     sw3_used_ports: []
     sw4_used_ports: []
-    sw1_tagged_ports: "{{ sw1_interfaces | selectattr('trunk','==',true) }}"
-    sw1_untagged_ports: "{{ sw1_interfaces | selectattr('trunk','==',false) }}"
-    sw2_tagged_ports: "{{ sw2_interfaces | selectattr('trunk','==',true) }}"
-    sw2_untagged_ports: "{{ sw2_interfaces | selectattr('trunk','==',false) }}"
-    sw3_tagged_ports: "{{ sw3_interfaces | selectattr(('trunk','==',true) }}"
-    sw3_untagged_ports: "{{ sw3_interfaces | selectattr('trunk','==',false) }}"
-    sw4_tagged_ports: "{{ sw4_interfaces | selectattr('trunk','==',true) }}"
-    sw4_untagged_ports: "{{ sw4_interfaces | selectattr('trunk','==',false) }}"
+    sw_tagged_ports: "{{ vars[ inventory_hostname+'_interfaces' ] | selectattr('trunk','==',true) }}"
+    sw_untagged_ports: "{{ vars[ inventory_hostname+'_interfaces' ] | selectattr('trunk','==',false) }}"
     sw1_hsrp: 150
     sw2_hsrp: 100
     sw1_interfaces:
