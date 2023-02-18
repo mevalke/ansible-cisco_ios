@@ -5,6 +5,12 @@
   gather_facts: false
   connection: local
   tasks:
+  tasks:
+  - name: Construct list of allowed vlans
+    set_fact:
+      global_allowed_vlans: "{{ global_allowed_vlans + [ item.id ] }}"
+    loop: "{{ global_tagged_vlans }}"
+    
   - name: Configure interface as trunk
     cisco.ios.ios_config:
       parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
@@ -13,7 +19,7 @@
       - no switchport access vlan
       - switchport trunk encapsulation dot1q
       - switchport mode trunk
-      - switchport trunk allowed vlan "{{ global_allowed_vlans | join(',') }}"
+      - switchport trunk allowed vlan {{ global_allowed_vlans | join(',') }}
       # lines: "{{ global_tagged_port_conf }} + {{ item.port_conf + [ item.desc ] }}"
     notify: "Write Config"
     loop: "{{ sw_tagged_ports }}"
