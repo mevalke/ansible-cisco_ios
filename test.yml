@@ -26,7 +26,7 @@
   - name: Configure interface as trunk
     cisco.ios.ios_l2_interfaces:
       config:
-      - name: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
+      - name: "{{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}"
         trunk:
           allowed_vlans: "{{ global_allowed_vlans | join(',') }}"
           encapsulation: dot1q
