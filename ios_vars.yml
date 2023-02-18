@@ -1,6 +1,6 @@
     global_vlans:
     - name: MGMT
-      id: 300
+      id: 252
       subnet: 10.223.252.0/24
       mask: 255.255.255.0
       tagged: true
