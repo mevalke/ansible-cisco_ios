@@ -42,7 +42,7 @@
       - description admin shut 
       - shutdown
     notify: "Write Config"
-    loop: "{{ vars[ inventory_hostname+'_switch_ports_all' ] | difference(vars[ inventory_hostname+'_used_ports. ]) }}"
+    loop: "{{ vars[ inventory_hostname+'_switch_ports_all' ] | difference(vars[ inventory_hostname+'_used_ports' ]) }}"
 
   handlers: 
   - name: Write Config
