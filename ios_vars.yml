@@ -24,16 +24,16 @@
       subnet: 45.156.100.0/26
       mask: 255.255.255.192
       tagged: false
-    global_untagged_port_conf:
-    - no switchport trunk allowed vlan
-    - no switchport mode trunk
-    - no switchport trunk encapsulation
-    - switchport mode access
-    global_tagged_port_conf:
-    - no switchport mode access
-    - no switchport access vlan
-    - switchport trunk encapsulation dot1q
-    - switchport mode trunk
+    # global_untagged_port_conf:
+    # - no switchport trunk allowed vlan
+    # - no switchport mode trunk
+    # - no switchport trunk encapsulation
+    # - switchport mode access
+    # global_tagged_port_conf:
+    # - no switchport mode access
+    # - no switchport access vlan
+    # - switchport trunk encapsulation dot1q
+    # - switchport mode trunk
     global_allowed_vlans: []
     global_tagged_vlans: "{{ global_vlans | selectattr('tagged','==',true) }}"
 
@@ -94,11 +94,11 @@
     - name: 1/0
       desc: description fw wan
       trunk: false
-      port_conf: []
+      port_conf: [switchport access vlan 600]
     - name: 1/2
       desc: description ansible
       trunk: false
-      port_conf: []
+      port_conf: [switchport access vlan 252]
     - name: 2/2
       desc: description sw3
       trunk: true
