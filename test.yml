@@ -35,12 +35,15 @@
     notify: "Write Config"
     loop: "{{ sw_untagged_ports }}"
 
-  # - name: Admin shut interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
-    # cisco.ios.ios_config:
-      # parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
-      # lines: "{{ global_untagged_port_conf }} + {{ item.port_conf + [item.desc] }}"
-    # notify: "Write Config"
-    # loop: "{{ sw_untagged_ports }}"
+  - name: Admin shut interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
+    cisco.ios.ios_config:
+      parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
+      lines:
+      - description admin shut 
+      - shutdown
+    notify: "Write Config"
+    loop: "{{ vars[ inventory_hostname+'_switch_ports_all' ] | difference(vars[ inventory_hostname+'_used_ports. ]) }}"
+
   handlers: 
   - name: Write Config
     cisco.ios.ios_command:
