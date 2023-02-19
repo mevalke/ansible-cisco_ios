@@ -18,6 +18,7 @@
       - switchport trunk encapsulation dot1q
       - switchport mode trunk
       - switchport trunk allowed vlan {{ global_allowed_vlans | join(',') }}
+      - no shutdown
     notify: "Write Config"
     loop: "{{ sw_tagged_ports }}"
  
@@ -30,6 +31,7 @@
       - no switchport trunk encapsulation
       - switchport mode access
       - "{{ item.port_conf[0] }}"
+      - no shutdown
     notify: "Write Config"
     loop: "{{ sw_untagged_ports }}"
 
