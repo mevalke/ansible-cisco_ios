@@ -35,7 +35,27 @@
     notify: "Write Config"
     loop: "{{ sw_untagged_ports }}"
 
-  - name: Admin shut interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
+  - name: construct list of used ports for sw1
+    set_fact:
+        sw1_used_ports: "{{ sw1_used_ports + [ item.name ] }}"
+    loop: "{{ sw1_interfaces }}"
+
+  - name: construct list of used ports for sw2
+    set_fact:
+      sw2_used_ports: "{{ sw2_used_ports + [ item.name ] }}"
+    loop: "{{ sw2_interfaces }}"
+
+  - name: construct list of used ports for sw3
+    set_fact:
+      sw3_used_ports: "{{ sw3_used_ports + [ item.name ] }}"
+    loop: "{{ sw3_interfaces }}"
+
+  - name: construct list of used ports for sw4
+    set_fact:
+      sw4_used_ports: "{{ sw4_used_ports + [ item.name ] }}"
+    loop: "{{ sw4_interfaces }}"
+
+  - name: Admin shut interface
     cisco.ios.ios_config:
       parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
       lines:
