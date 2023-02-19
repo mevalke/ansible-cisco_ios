@@ -131,8 +131,8 @@
     sw4_interfaces:
     - name: 0/0
       desc: description test ws
-      trunk: true
-      port_conf: []
+      trunk: false
+      port_conf: [switchport access vlan 100]
     - name: 0/1
       desc: description vmware
       trunk: true
