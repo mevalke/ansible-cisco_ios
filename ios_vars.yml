@@ -51,95 +51,95 @@
     - name: 0/0
       desc: description sw2 hsrp
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 0/1
       desc: description fw lan
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 1/0
       desc: description fw wan
       trunk: false
-      port_conf: [switchport access vlan 600]
+      port_conf: [switchport access vlan 600,'','','']
     - name: 1/1
       desc: description ansible
       trunk: false
-      port_conf: [switchport access vlan 252]
+      port_conf: [switchport access vlan 252,'','','']
     - name: 2/1
       desc: description sw3
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 3/1
       desc: description sw4
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     sw2_interfaces:
     - name: 0/0
       desc: description sw1 hsrp
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 0/1
       desc: description fw lan
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 1/0
       desc: description fw wan
       trunk: false
-      port_conf: [switchport access vlan 600]
+      port_conf: [switchport access vlan 600,'','','']
     - name: 1/2
       desc: description ansible
       trunk: false
-      port_conf: [switchport access vlan 252]
+      port_conf: [switchport access vlan 252,'','','']
     - name: 2/2
       desc: description sw3
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 3/2
       desc: description sw4
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     sw3_interfaces:
     - name: 0/1
       desc: description vmware
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 0/2
       desc: description netapp
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 0/3
       desc: description backup
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 2/1
       desc: description sw1
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 2/2
       desc: description sw2
       trunk: true
-      port_conf: []
+      pport_conf: ['','','','']
     sw4_interfaces:
     - name: 0/0
       desc: description test ws
       trunk: false
-      port_conf: [switchport access vlan 100]
+      port_conf: [switchport access vlan 100,'','','']
     - name: 0/1
       desc: description vmware
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 0/2
       desc: description netapp
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 0/3
       desc: description backup
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 3/1
       desc: description sw1
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
     - name: 3/2
       desc: description sw2
       trunk: true
-      port_conf: []
+      port_conf: ['','','','']
