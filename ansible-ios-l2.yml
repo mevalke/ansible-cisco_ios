@@ -1,42 +1,77 @@
 ---
-- name: Configure L2 ports
+- name: Configure L2 interfaces on IOS switches
   hosts: all
-  vars_files: vars.yml
+  vars_files: ios_vars.yml
   gather_facts: false
   connection: local
-  vars:
-    trunk_vlans: []
-    tagged_vlans: "{{ ios_vlans | selectattr('tagged','==', true ) }}"
+  tasks:
   tasks:
   - name: Construct list of allowed vlans
     set_fact:
-      allowed_vlans: "{{ trunk_vlans + [ item.vlan_id ] }}"
-    loop: "{{ tagged_vlans }}"
+      global_allowed_vlans: "{{ global_allowed_vlans + [ item.id ] }}"
+    loop: "{{ global_tagged_vlans }}"
 
-  - name: Configure trunk ports
-    cisco.ios.ios_l2_interfaces:
-      config:
-      - name: "{{ ios_l2_port_type}}{{ item }}"
-        trunk:
-          allowed_vlans: "{{ allowed_vlans }}"
-          encapsulation: dot1q
-      state: replaced
-    when: ios_l2_trunk_ports
-#    when: inventory_hostname == "{{ item.switch }}"
-    loop: "{{ ios_l2_trunk_ports }}"
+  - name: Configure interface as trunk
+    cisco.ios.ios_config:
+      parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
+      lines:
+      - switchport trunk encapsulation dot1q
+      - switchport mode trunk
+      - switchport trunk allowed vlan {{ global_allowed_vlans | join(',') }}
+      - "{{ item.desc }}"
+      - "{{ item.port_conf[0] }}"
+      - "{{ item.port_conf[1] }}"
+      - "{{ item.port_conf[2] }}"
+      - "{{ item.port_conf[3] }}"
+      - no shutdown
     notify: "Write Config"
+    loop: "{{ sw_tagged_ports }}"
 
-  - name: Configure access ports
-    cisco.ios.ios_l2_interfaces:
-      config:
-      - name: "{{ ios_l2_port_type}}{{ item.port }}"
-        mode: access
-        access:
-          vlan: "{{ item.vlan }}"
-    when: ios_l2_access_ports
- #   when: inventory_hostname == "{{ item.switch }}"
-    loop: "{{ ios_l2_access_ports }}"
+  - name: Configure interface as access port
+    cisco.ios.ios_config:
+      parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
+      lines:
+      - no switchport trunk allowed vlan
+      - no switchport mode trunk
+      - no switchport trunk encapsulation
+      - switchport mode access
+      - "{{ item.desc }}"
+      - "{{ item.port_conf[0] }}"
+      - "{{ item.port_conf[1] }}"
+      - "{{ item.port_conf[2] }}"
+      - "{{ item.port_conf[3] }}"
+      - no shutdown
     notify: "Write Config"
+    loop: "{{ sw_untagged_ports }}"
+
+  - name: construct list of used ports for sw1
+    set_fact:
+        sw1_used_ports: "{{ sw1_used_ports + [ item.name ] }}"
+    loop: "{{ sw1_interfaces }}"
+
+  - name: construct list of used ports for sw2
+    set_fact:
+      sw2_used_ports: "{{ sw2_used_ports + [ item.name ] }}"
+    loop: "{{ sw2_interfaces }}"
+
+  - name: construct list of used ports for sw3
+    set_fact:
+      sw3_used_ports: "{{ sw3_used_ports + [ item.name ] }}"
+    loop: "{{ sw3_interfaces }}"
+
+  - name: construct list of used ports for sw4
+    set_fact:
+      sw4_used_ports: "{{ sw4_used_ports + [ item.name ] }}"
+    loop: "{{ sw4_interfaces }}"
+
+  - name: Admin shut interface
+    cisco.ios.ios_config:
+      parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item }}
+      lines:
+      - description admin shut
+      - shutdown
+    notify: "Write Config"
+    loop: "{{ vars[ inventory_hostname+'_switch_ports_all' ] | difference(vars[ inventory_hostname+'_used_ports' ]) }}"
 
   handlers:
   - name: Write Config
