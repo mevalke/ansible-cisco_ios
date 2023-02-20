@@ -117,7 +117,7 @@
     - name: 2/2
       desc: description sw2
       trunk: true
-      pport_conf: ['','','','']
+      port_conf: ['','','','']
     sw4_interfaces:
     - name: 0/0
       desc: description test ws
