@@ -72,6 +72,10 @@
       desc: description sw4
       trunk: true
       port_conf: ['','','','']
+    - name: 3/3
+      desc: description operator
+      trunk: false
+      port_conf: [switchport access vlan 600,'','','']
     sw2_interfaces:
     - name: 0/0
       desc: description sw1 hsrp
@@ -97,6 +101,10 @@
       desc: description sw4
       trunk: true
       port_conf: ['','','','']
+    - name: 3/3
+      desc: description operator
+      trunk: false
+      port_conf: [switchport access vlan 600,'','','']
     sw3_interfaces:
     - name: 0/1
       desc: description vmware
