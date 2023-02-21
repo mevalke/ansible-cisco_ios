@@ -69,6 +69,9 @@
       parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item }}
       lines:
       - description admin shut
+      - no switchport mode
+      - no switchport trunk allowed vlan
+      - no switchport trunk encapsulation
       - shutdown
     notify: "Write Config"
     loop: "{{ vars[ inventory_hostname+'_switch_ports_all' ] | difference(vars[ inventory_hostname+'_used_ports' ]) }}"
