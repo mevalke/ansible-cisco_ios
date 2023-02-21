@@ -1,7 +1,7 @@
 ---
 - name: Configure L2 interfaces on IOS switches
   hosts: all
-  vars_files: ios_vars.yml
+  vars_files: vars.yml
   gather_facts: false
   connection: local
   tasks:
