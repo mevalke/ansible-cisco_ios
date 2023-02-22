@@ -1,10 +1,31 @@
+# Please see vars.yml for a valid configuration.
+# Variables:
+# - global_tagged_vlans:
+#   - this is a dictionary that contains the items of the global_vlans dictionary with trunk value set to true
+#     - dictionary is constructed in the vars file using the selectattr filter
+# - global_allowed_vlans:
+#   - this is a dict that is declared in vars.yml and utilized here for generating a list for allowed vlans
+#     - this allowed vlans list is used in all trunk configurations
+# - sw_tagged_ports:
+#   - this is a dictionary that contains the items of inventory_hostname+'_interfaces' (i.e. sw1_interface, sw2_interfaces and so on) with trunk value set to true
+#     - dictionary is constructed in the vars file using the selectattr filter
+# - sw_untagged_ports:
+#   - this is a dictionary that contains the items of inventory_hostname+'_interfaces' (i.e. sw1_interface, sw2_interfaces and so on) with trunk value set to false 
+#     - dictionary is constructed in the vars file using the selectattr filter
+# - swX_interfaces:
+#   - this is a dict that provides the following items:
+#     - name: this is a string that defines the module/port of the IOS switch, for example 0/3
+#       - when the dict (sw_(un)tagged_ports) is looped the name item is prefixed with switch interface prefix, for example GigabitEthernet
+# - swX_used_ports:
+#   - this is a list of IOS ports included in swX_interfaces, it is being utilized in the task "Admin shut interface" by comparing it to  swX_switch_ports_all defined in vars.yml 
+#     - the comparison results in a list of unused ports on each switch, list is looped and each unused ports shut down        
+#
 ---
 - name: Configure L2 interfaces on IOS switches
   hosts: all
   vars_files: vars.yml
   gather_facts: false
   connection: local
-  tasks:
   tasks:
   - name: Construct list of allowed vlans
     set_fact:

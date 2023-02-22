@@ -1,3 +1,9 @@
+# Please see vars.yml for a valid configuration.
+# Variables:
+# - global_vlans:
+#   - this is a dictionary that provides the following values: 
+#     - id 
+#     - name
 ---
 - name: Create one or multiple VLANs 
   hosts: all
@@ -19,3 +25,4 @@
     cisco.ios.ios_command:
       commands:
       - write
+

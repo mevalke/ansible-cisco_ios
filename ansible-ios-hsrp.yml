@@ -1,4 +1,12 @@
-# Trunk to HA pair needs to be configured using the L2 Interface playbook
+# Please see vars.yml for a valid configuration.
+# Variables:
+# - global_tagged_vlans:
+#   - this is a dictionary that contains the items of the global_vlans dictionary with trunk value set to true
+#     - dictionary is constructed in the vars file using the selectattr filter 
+# - inventory_hostname+'_hsrp' (i.e. sw1_hsrp, sw2_hsrp and so on)
+#   - this is a string that provides the hsrp priority value 
+# 
+# Please note that this playbook configures only the standby values. Port conecting the HA pair is configured using the L2 Interface playbook.
 ---
 - name: Configure HSRP on core switches
   hosts: all
@@ -6,11 +14,6 @@
   gather_facts: false
   connection: local
   tasks:
-  - name: Construct list of allowed vlans
-    set_fact:
-      global_allowed_vlans: "{{ global_allowed_vlans + [ item.id ] }}"
-    loop: "{{ global_tagged_vlans }}"
-
   - name: Configure standby
     cisco.ios.ios_config:
       parents: interface vlan {{ item.id }}
@@ -19,10 +22,11 @@
       - standby 1 priority {{ vars[ inventory_hostname+'_hsrp' ] }}
       - standby 1 preempt
     notify: "Write Config"
-    loop: "{{ global_vlans }}"
+    loop: "{{ global_tagged_vlans }}"
 
   handlers: 
   - name: Write Config
     cisco.ios.ios_command:
       commands:
       - write
+

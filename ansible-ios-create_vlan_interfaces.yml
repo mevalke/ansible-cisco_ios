@@ -1,3 +1,13 @@
+# Please see vars.yml for a valid configuration.
+# Variables:
+# - global_tagged_vlans:
+#   - this is a dictionary that provides the following values: 
+#     - id
+#     - subnet  
+#     - mask 
+# - inventory_hostname+'_ip' (i.e. sw1_ip, sw2_ip and so on)
+#   - this is a string that provides the last octet of the svi ip
+#     - first three octets are extracted from the subnet variable item using the split filter  
 ---
 - name: Create one or multiple VLAN interfaces
   hosts: all
@@ -19,3 +29,4 @@
     cisco.ios.ios_command:
       commands:
       - write
+
