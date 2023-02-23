@@ -1,11 +1,18 @@
-# Please see vars.yml for a valid configuration.
+# This playbook loops through global_tagged_vlans dictionary constructed in the vars file by utilizing the selecting the global_vlans dict items
+# with tagged attribute set to true. The followng HSRP configurations are being made per item:
+# - virtual IP set to xxx.xxx.xxx.254
+# - priority set to the value defined in the vars file 
+# - preempt enabled
+#
+# Please see vars.yml for a valid variable configuration.
+#
 # Variables:
 # - global_tagged_vlans:
 #   - this is a dictionary that contains the items of the global_vlans dictionary with trunk value set to true
-#     - dictionary is constructed in the vars file using the selectattr filter 
+#     - dictionary is constructed in the vars file using the selectattr filter
 # - inventory_hostname+'_hsrp' (i.e. sw1_hsrp, sw2_hsrp and so on)
-#   - this is a string that provides the hsrp priority value 
-# 
+#   - this is a string that provides the hsrp priority value
+#
 # Please note that this playbook configures only the standby values. Port conecting the HA pair is configured using the L2 Interface playbook.
 ---
 - name: Configure HSRP on core switches
@@ -24,9 +31,8 @@
     notify: "Write Config"
     loop: "{{ global_tagged_vlans }}"
 
-  handlers: 
+  handlers:
   - name: Write Config
     cisco.ios.ios_command:
       commands:
       - write
-
