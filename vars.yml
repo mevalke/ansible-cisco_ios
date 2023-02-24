@@ -1,27 +1,31 @@
     global_vlans:
-    - name: MGMT
-      id: 252
-      subnet: 10.223.252.0/24
+    - name: MGMT2001
+      id: 2001
+      subnet: 10.100.201.0/24
       mask: 255.255.255.0
       tagged: true
-    - name: LAN
-      id: 100
-      subnet: 10.223.100.0/24
+      vswitch: vSwitch0
+    - name: LAN1001
+      id: 1001
+      subnet: 10.100.101.0/24
       mask: 255.255.255.0
       tagged: true
-    - name: DMZ
-      id: 200
-      subnet: 10.223.200.0/24
+      vswitch: vSwitch0
+    - name: LAN1002
+      id: 1002
+      subnet: 10.100.102.0/24
       mask: 255.255.255.0
       tagged: true
-    - name: LAN2
-      id: 300
-      subnet: 10.223.120.0/24
+      vswitch: vSwitch0
+    - name: DMZ1003
+      id: 1003
+      subnet: 10.100.103.0/24
       mask: 255.255.255.0
       tagged: true
+      vswitch: vSwitch0
     - name: WAN
-      id: 600
-      subnet: 45.156.100.0/26
+      id: 3000
+      subnet: 203.0.113.0/26
       mask: 255.255.255.192
       tagged: false
     global_allowed_vlans: []
@@ -59,11 +63,11 @@
     - name: 1/0
       desc: description fw wan
       trunk: false
-      port_conf: [switchport access vlan 600,'','','']
+      port_conf: [switchport access vlan 3000,'','','']
     - name: 1/1
       desc: description ansible
       trunk: false
-      port_conf: [switchport access vlan 252,'','','']
+      port_conf: [switchport access vlan 2001,'','','']
     - name: 2/1
       desc: description sw3
       trunk: true
@@ -75,7 +79,7 @@
     - name: 3/3
       desc: description operator
       trunk: false
-      port_conf: [switchport access vlan 600,'','','']
+      port_conf: [switchport access vlan 3000,'','','']
     sw2_interfaces:
     - name: 0/0
       desc: description sw1 hsrp
@@ -88,11 +92,11 @@
     - name: 1/0
       desc: description fw wan
       trunk: false
-      port_conf: [switchport access vlan 600,'','','']
+      port_conf: [switchport access vlan 3000,'','','']
     - name: 1/2
       desc: description ansible
       trunk: false
-      port_conf: [switchport access vlan 252,'','','']
+      port_conf: [switchport access vlan 2001,'','','']
     - name: 2/2
       desc: description sw3
       trunk: true
@@ -104,7 +108,7 @@
     - name: 3/3
       desc: description operator
       trunk: false
-      port_conf: [switchport access vlan 600,'','','']
+      port_conf: [switchport access vlan 3000,'','','']
     sw3_interfaces:
     - name: 0/1
       desc: description vmware
