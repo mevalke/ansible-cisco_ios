@@ -4,25 +4,25 @@
       subnet: 10.100.201.0/24
       mask: 255.255.255.0
       tagged: true
-	  vswitch: vSwitch0
+      vswitch: vSwitch0
     - name: LAN1001
       id: 1001
       subnet: 10.100.101.0/24
       mask: 255.255.255.0
       tagged: true
-	  vswitch: vSwitch0
+      vswitch: vSwitch0
     - name: LAN1002
       id: 1002
       subnet: 10.100.102.0/24
       mask: 255.255.255.0
       tagged: true
-	  vswitch: vSwitch0
+      vswitch: vSwitch0
     - name: DMZ1003
       id: 1003
       subnet: 10.100.103.0/24
       mask: 255.255.255.0
       tagged: true
-	  vswitch: vSwitch0
+      vswitch: vSwitch0
     - name: WAN
       id: 3000
       subnet: 203.0.113.0/26
