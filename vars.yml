@@ -28,6 +28,7 @@
       subnet: 192.168.122.0/24
       mask: 255.255.255.0
       tagged: false
+      vswitch: ""
     global_allowed_vlans: []
     global_tagged_vlans: "{{ global_vlans | selectattr('tagged','==',true) }}"
 
