@@ -5,10 +5,11 @@
 #
 # Variables:
 # - global_tagged_vlans:
-#   - this is a dictionary that provides the following required values:
+#   - this is a list of dictionaries that provides the following required values:
 #     - id
 #     - subnet
 #     - mask
+#   - only the items that have trunk attribute set to true get selected and respective vlans created  
 # - inventory_hostname+'_ip' (i.e. sw1_ip, sw2_ip and so on)
 #   - this is a string that provides the last octet of the svi ip
 #     - first three octets are extracted from the subnet variable item using the split filter
@@ -27,7 +28,7 @@
       - "ip address {{ item.subnet.split('.')[0] }}.{{ item.subnet.split('.')[1] }}.{{ item.subnet.split('.')[2] }}.{{ vars[inventory_hostname+'_ip'] }}  {{ item.mask }}"
       - no shutdown
     notify: "Write Config"
-    loop: "{{ global_tagged_vlans }}"
+    loop: "{{ global_vlans | selectattr('tagged','==',true) | list }}"
   handlers:
   - name: Write Config
     cisco.ios.ios_command:
