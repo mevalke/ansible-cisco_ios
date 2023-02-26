@@ -1,164 +1,163 @@
-      global_vlans:
-      - name: MGMT1201
-        id: 1201
-        subnet: 10.100.201.0/24
-        mask: 255.255.255.0
-        tagged: true
-        vswitch: vSwitch0
-        mgmt: true
-      - name: LAN1101
-        id: 1101
-        subnet: 10.100.101.0/24
-        mask: 255.255.255.0
-        tagged: true
-        vswitch: vSwitch0
-        mgmt: false
-      - name: LAN1102
-        id: 1102
-        subnet: 10.100.102.0/24
-        mask: 255.255.255.0
-        tagged: true
-        vswitch: vSwitch0
-        mgmt: false
-      - name: DMZ1103
-        id: 1103
-        subnet: 10.100.103.0/24
-        mask: 255.255.255.0
-        tagged: true
-        vswitch: vSwitch0
-        mgmt: false
-      - name: WAN
-        id: 400
-        subnet: 192.168.122.0/24
-        mask: 255.255.255.0
-        tagged: false
-        vswitch: ""
-        mgmt: false
-      global_allowed_vlans: []
-      global_tagged_vlans: "{{ global_vlans | selectattr('tagged','==',true) }}"
+global_vlans:
+- name: MGMT1201
+  id: 1201
+  subnet: 10.100.201.0/24
+  mask: 255.255.255.0
+  tagged: true
+  vswitch: vSwitch0
+  mgmt: true
+- name: LAN1101
+  id: 1101
+  subnet: 10.100.101.0/24
+  mask: 255.255.255.0
+  tagged: true
+  vswitch: vSwitch0
+  mgmt: false
+- name: LAN1102
+  id: 1102
+  subnet: 10.100.102.0/24
+  mask: 255.255.255.0
+  tagged: true
+  vswitch: vSwitch0
+  mgmt: false
+- name: DMZ1103
+  id: 1103
+  subnet: 10.100.103.0/24
+  mask: 255.255.255.0
+  tagged: true
+  vswitch: vSwitch0
+  mgmt: false
+- name: WAN
+  id: 400
+  subnet: 192.168.122.0/24
+  mask: 255.255.255.0
+  tagged: false
+  vswitch: ""
+  mgmt: false
+global_allowed_vlans: []
+global_tagged_vlans: "{{ global_vlans | selectattr('tagged','==',true) }}"
 
-      sw1_switch_ports_all: [ 0/0,0/1,0/2,0/3,1/0,1/1,1/2,1/3,2/0,2/1,2/2,2/3,3/0,3/1,3/2,3/3 ]
-      sw2_switch_ports_all: [ 0/0,0/1,0/2,0/3,1/0,1/1,1/2,1/3,2/0,2/1,2/2,2/3,3/0,3/1,3/2,3/3 ]
-      sw3_switch_ports_all: [ 0/0,0/1,0/2,0/3,1/0,1/1,1/2,1/3,2/0,2/1,2/2,2/3,3/0,3/1,3/2,3/3 ]
-      sw4_switch_ports_all: [ 0/0,0/1,0/2,0/3,1/0,1/1,1/2,1/3,2/0,2/1,2/2,2/3,3/0,3/1,3/2,3/3 ]
-      sw1_switch_interface_prefix: GigabitEthernet
-      sw2_switch_interface_prefix: GigabitEthernet
-      sw3_switch_interface_prefix: GigabitEthernet
-      sw4_switch_interface_prefix: GigabitEthernet
-      sw1_ip: 11
-      sw2_ip: 12
-      sw3_ip: 13
-      sw4_ip: 14
-      sw1_used_ports: []
-      sw2_used_ports: []
-      sw3_used_ports: []
-      sw4_used_ports: []
-      sw_tagged_ports: "{{ vars[ inventory_hostname+'_interfaces' ] | selectattr('trunk','==',true) }}"
-      sw_untagged_ports: "{{ vars[ inventory_hostname+'_interfaces' ] | selectattr('trunk','==',false) }}"
-      sw1_hsrp: 150
-      sw2_hsrp: 100
-      sw1_interfaces:
-      - name: 0/0
-        desc: description sw2 hsrp
-        trunk: true
-        port_conf: ['','','','']
-      - name: 0/1
-        desc: description fw lan
-        trunk: true
-        port_conf: ['','','','']
-      - name: 1/0
-        desc: description fw wan
-        trunk: false
-        port_conf: [switchport access vlan 400,'','','']
-      - name: 1/1
-        desc: description ansible
-        trunk: false
-        port_conf: [switchport access vlan 1201,'','','']
-      - name: 2/1
-        desc: description sw3
-        trunk: true
-        port_conf: ['','','','']
-      - name: 3/1
-        desc: description sw4
-        trunk: true
-        port_conf: ['','','','']
-      - name: 3/3
-        desc: description operator
-        trunk: false
-        port_conf: [switchport access vlan 400,'','','']
-      sw2_interfaces:
-      - name: 0/0
-        desc: description sw1 hsrp
-        trunk: true
-        port_conf: ['','','','']
-      - name: 0/1
-        desc: description fw lan
-        trunk: true
-        port_conf: ['','','','']
-      - name: 1/0
-        desc: description fw wan
-        trunk: false
-        port_conf: [switchport access vlan 400,'','','']
-      - name: 1/2
-        desc: description ansible
-        trunk: false
-        port_conf: [switchport access vlan 1201,'','','']
-      - name: 2/2
-        desc: description sw3
-        trunk: true
-        port_conf: ['','','','']
-      - name: 3/2
-        desc: description sw4
-        trunk: true
-        port_conf: ['','','','']
-      - name: 3/3
-        desc: description operator
-        trunk: false
-        port_conf: [switchport access vlan 400,'','','']
-      sw3_interfaces:
-      - name: 0/1
-        desc: description vmware
-        trunk: true
-        port_conf: ['','','','']
-      - name: 0/2
-        desc: description netapp
-        trunk: true
-        port_conf: ['','','','']
-      - name: 0/3
-        desc: description backup
-        trunk: true
-        port_conf: ['','','','']
-      - name: 2/1
-        desc: description sw1
-        trunk: true
-        port_conf: ['','','','']
-      - name: 2/2
-        desc: description sw2
-        trunk: true
-        port_conf: ['','','','']
-      sw4_interfaces:
-      - name: 0/0
-        desc: description test ws
-        trunk: false
-        port_conf: [switchport access vlan 1101,'','','']
-      - name: 0/1
-        desc: description vmware
-        trunk: true
-        port_conf: ['','','','']
-      - name: 0/2
-        desc: description netapp
-        trunk: true
-        port_conf: ['','','','']
-      - name: 0/3
-        desc: description backup
-        trunk: true
-        port_conf: ['','','','']
-      - name: 3/1
-        desc: description sw1
-        trunk: true
-        port_conf: ['','','','']
-      - name: 3/2
-        desc: description sw2
-        trunk: true
-        port_conf: ['','','','']
-
+sw1_switch_ports_all: [ 0/0,0/1,0/2,0/3,1/0,1/1,1/2,1/3,2/0,2/1,2/2,2/3,3/0,3/1,3/2,3/3 ]
+sw2_switch_ports_all: [ 0/0,0/1,0/2,0/3,1/0,1/1,1/2,1/3,2/0,2/1,2/2,2/3,3/0,3/1,3/2,3/3 ]
+sw3_switch_ports_all: [ 0/0,0/1,0/2,0/3,1/0,1/1,1/2,1/3,2/0,2/1,2/2,2/3,3/0,3/1,3/2,3/3 ]
+sw4_switch_ports_all: [ 0/0,0/1,0/2,0/3,1/0,1/1,1/2,1/3,2/0,2/1,2/2,2/3,3/0,3/1,3/2,3/3 ]
+sw1_switch_interface_prefix: GigabitEthernet
+sw2_switch_interface_prefix: GigabitEthernet
+sw3_switch_interface_prefix: GigabitEthernet
+sw4_switch_interface_prefix: GigabitEthernet
+sw1_ip: 11
+sw2_ip: 12
+sw3_ip: 13
+sw4_ip: 14
+sw1_used_ports: []
+sw2_used_ports: []
+sw3_used_ports: []
+sw4_used_ports: []
+sw_tagged_ports: "{{ vars[ inventory_hostname+'_interfaces' ] | selectattr('trunk','==',true) }}"
+sw_untagged_ports: "{{ vars[ inventory_hostname+'_interfaces' ] | selectattr('trunk','==',false) }}"
+sw1_hsrp: 150
+sw2_hsrp: 100
+sw1_interfaces:
+- name: 0/0
+  desc: description sw2 hsrp
+  trunk: true
+  port_conf: ['','','','']
+- name: 0/1
+  desc: description fw lan
+  trunk: true
+  port_conf: ['','','','']
+- name: 1/0
+  desc: description fw wan
+  trunk: false
+  port_conf: [switchport access vlan 400,'','','']
+- name: 1/1
+  desc: description ansible
+  trunk: false
+  port_conf: [switchport access vlan 1201,'','','']
+- name: 2/1
+  desc: description sw3
+  trunk: true
+  port_conf: ['','','','']
+- name: 3/1
+  desc: description sw4
+  trunk: true
+  port_conf: ['','','','']
+- name: 3/3
+  desc: description operator
+  trunk: false
+  port_conf: [switchport access vlan 400,'','','']
+sw2_interfaces:
+- name: 0/0
+  desc: description sw1 hsrp
+  trunk: true
+  port_conf: ['','','','']
+- name: 0/1
+  desc: description fw lan
+  trunk: true
+  port_conf: ['','','','']
+- name: 1/0
+  desc: description fw wan
+  trunk: false
+  port_conf: [switchport access vlan 400,'','','']
+- name: 1/2
+  desc: description ansible
+  trunk: false
+  port_conf: [switchport access vlan 1201,'','','']
+- name: 2/2
+  desc: description sw3
+  trunk: true
+  port_conf: ['','','','']
+- name: 3/2
+  desc: description sw4
+  trunk: true
+  port_conf: ['','','','']
+- name: 3/3
+  desc: description operator
+  trunk: false
+  port_conf: [switchport access vlan 400,'','','']
+sw3_interfaces:
+- name: 0/1
+  desc: description vmware
+  trunk: true
+  port_conf: ['','','','']
+- name: 0/2
+  desc: description netapp
+  trunk: true
+  port_conf: ['','','','']
+- name: 0/3
+  desc: description backup
+  trunk: true
+  port_conf: ['','','','']
+- name: 2/1
+  desc: description sw1
+  trunk: true
+  port_conf: ['','','','']
+- name: 2/2
+  desc: description sw2
+  trunk: true
+  port_conf: ['','','','']
+sw4_interfaces:
+- name: 0/0
+  desc: description test ws
+  trunk: false
+  port_conf: [switchport access vlan 1101,'','','']
+- name: 0/1
+  desc: description vmware
+  trunk: true
+  port_conf: ['','','','']
+- name: 0/2
+  desc: description netapp
+  trunk: true
+  port_conf: ['','','','']
+- name: 0/3
+  desc: description backup
+  trunk: true
+  port_conf: ['','','','']
+- name: 3/1
+  desc: description sw1
+  trunk: true
+  port_conf: ['','','','']
+- name: 3/2
+  desc: description sw2
+  trunk: true
+  port_conf: ['','','','']
