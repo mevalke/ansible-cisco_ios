@@ -1,4 +1,4 @@
-# This playbook configures access and trunk ports on Cisco IOS devices. It has only been tested using Cisco VIRL L2 images in GNS3. 
+# This playbook configures access and trunk ports on Cisco IOS devices. 
 # The remaining ports not defined as tagged or untagged are shut down.
 # The commands are hard coded in the playbook and by default only VLAN configurations are looked up from the vars file. However, it
 # is possible to configure up to four additional commands by specifying them in the port_conf item of the desired port on 
@@ -7,11 +7,11 @@
 # Please see vars.yml for a valid variable configuration.
 #
 # Variables:
-# - global_tagged_vlans:
-#   - this is a dictionary that contains the items of the global_vlans dictionary with trunk value set to true
-#     - dictionary is constructed in the vars file using the selectattr filter
+# - global_vlans:
+#   - this is a list of dictionares that contains the required vlan information
+#     - the items with trunk attribute set to true get selected and added to global_allowed_vlans list
 # - global_allowed_vlans:
-#   - this is a dict that is declared in vars.yml and utilized here for generating a list for allowed vlans
+#   - this is a list that is declared in vars.yml and appended here by the "Construct list of allowed vlans" task
 #     - this allowed vlans list is used in all trunk configurations
 # - sw_tagged_ports:
 #   - this is a dictionary that contains the items of inventory_hostname+'_interfaces' (i.e. sw1_interface, sw2_interfaces and so on) with trunk value set to true
@@ -31,14 +31,14 @@
 ---
 - name: Configure L2 interfaces on IOS switches
   hosts: all
-  vars_files: vars.yml
+  #  vars_files: vars.yml
   gather_facts: false
   connection: local
   tasks:
   - name: Construct list of allowed vlans
     set_fact:
       global_allowed_vlans: "{{ global_allowed_vlans + [ item.id ] }}"
-    loop: "{{ global_tagged_vlans }}"
+    loop: "{{ global_vlans | selectattr('tagged','==',true) | list }}"
 
   - name: Configure interface as trunk
     cisco.ios.ios_config:

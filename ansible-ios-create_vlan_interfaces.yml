@@ -1,10 +1,9 @@
-# This playbook loops through global_tagged_vlans dictionary constructed in the vars file by utilizing the selecting the global_vlans dict items
-# with tagged attribute set to true. VLAN interface is being created per item with an ip of xxx.xxx.xxx.<swX_ip>. 
+# This playbook loops through a list of dictionaries and creates an SVI per item.
 #
 # Please see vars.yml for a valid variable configuration.
 #
 # Variables:
-# - global_tagged_vlans:
+# - global_vlans:
 #   - this is a list of dictionaries that provides the following required values:
 #     - id
 #     - subnet
@@ -16,7 +15,7 @@
 ---
 - name: Create one or multiple VLAN interfaces
   hosts: all
-  vars_files: vars.yml
+  #  vars_files: vars.yml
   gather_facts: false
   connection: local
   tasks:
