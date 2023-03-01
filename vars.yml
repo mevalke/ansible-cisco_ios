@@ -49,10 +49,6 @@ sw1_ip: 11
 sw2_ip: 12
 sw3_ip: 13
 sw4_ip: 14
-sw1_used_ports: []
-sw2_used_ports: []
-sw3_used_ports: []
-sw4_used_ports: []
 sw_tagged_ports: "{{ vars[ inventory_hostname+'_interfaces' ] | selectattr('trunk','==',true) }}"
 sw_untagged_ports: "{{ vars[ inventory_hostname+'_interfaces' ] | selectattr('trunk','==',false) }}"
 sw1_hsrp: 150

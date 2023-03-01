@@ -9,8 +9,8 @@
 # Variables:
 # - global_vlans:
 #   - this is a list of dictionares that contains the required vlan information
-#     - the items with trunk attribute set to true get selected and added to local_allowed_vlans list
-# - local_allowed_vlans:
+#     - the items with trunk attribute set to true get selected and added to allowed_vlans list
+# - allowed_vlans:
 #   - this is a list that is appended by the "Construct list of allowed vlans" task
 #     - this allowed vlans list is used in all trunk configurations
 # - swX_interfaces:
@@ -29,16 +29,36 @@
   gather_facts: false
   connection: local
   vars:
-    local_allowed_vlans: []
+    allowed_vlans: []
+    sw1_used_ports: []
+    sw2_used_ports: []
+    sw3_used_ports: []
+    sw4_used_ports: []
   tasks:
   - name: Construct list of allowed vlans
     set_fact:
-      local_allowed_vlans: "{{ local_allowed_vlans + [ item.id ] }}"
+      allowed_vlans: "{{ allowed_vlans + [ item.id ] }}"
     loop: "{{ global_vlans | selectattr('tagged','==',true) | list }}"
 
-  - name: Print allowed vlans
-    debug:
-      msg: "{{ local_allowed_vlans }}"
+  - name: construct list of used ports for sw1
+    set_fact:
+        sw1_used_ports: "{{ sw1_used_ports + [ item.name ] }}"
+    loop: "{{ sw1_interfaces }}"
+
+  - name: construct list of used ports for sw2
+    set_fact:
+      sw2_used_ports: "{{ sw2_used_ports + [ item.name ] }}"
+    loop: "{{ sw2_interfaces }}"
+
+  - name: construct list of used ports for sw3
+    set_fact:
+      sw3_used_ports: "{{ sw3_used_ports + [ item.name ] }}"
+    loop: "{{ sw3_interfaces }}"
+
+  - name: construct list of used ports for sw4
+    set_fact:
+      sw4_used_ports: "{{ sw4_used_ports + [ item.name ] }}"
+    loop: "{{ sw4_interfaces }}"
 
   - name: Configure interface as trunk
     cisco.ios.ios_config:
@@ -46,7 +66,7 @@
       lines:
       - switchport trunk encapsulation dot1q
       - switchport mode trunk
-      - switchport trunk allowed vlan {{ local_allowed_vlans | join(',') }}
+      - switchport trunk allowed vlan {{ allowed_vlans | join(',') }}
       - "{{ item.desc }}"
       - "{{ item.port_conf[0] }}"
       - "{{ item.port_conf[1] }}"
@@ -72,26 +92,6 @@
       - no shutdown
     notify: "Write Config"
     loop: "{{ vars[ inventory_hostname+'_interfaces' ] | selectattr('trunk','==',false) | list }}"
-
-  - name: construct list of used ports for sw1
-    set_fact:
-        sw1_used_ports: "{{ sw1_used_ports + [ item.name ] }}"
-    loop: "{{ sw1_interfaces }}"
-
-  - name: construct list of used ports for sw2
-    set_fact:
-      sw2_used_ports: "{{ sw2_used_ports + [ item.name ] }}"
-    loop: "{{ sw2_interfaces }}"
-
-  - name: construct list of used ports for sw3
-    set_fact:
-      sw3_used_ports: "{{ sw3_used_ports + [ item.name ] }}"
-    loop: "{{ sw3_interfaces }}"
-
-  - name: construct list of used ports for sw4
-    set_fact:
-      sw4_used_ports: "{{ sw4_used_ports + [ item.name ] }}"
-    loop: "{{ sw4_interfaces }}"
 
   - name: Admin shut interface
     cisco.ios.ios_config:
