@@ -9,9 +9,9 @@
 # Variables:
 # - global_vlans:
 #   - this is a list of dictionares that contains the required vlan information
-#     - the items with trunk attribute set to true get selected and added to global_allowed_vlans list
-# - global_allowed_vlans:
-#   - this is a list that is declared in vars.yml and appended here by the "Construct list of allowed vlans" task
+#     - the items with trunk attribute set to true get selected and added to local_allowed_vlans list
+# - local_allowed_vlans:
+#   - this is a list that is appended by the "Construct list of allowed vlans" task
 #     - this allowed vlans list is used in all trunk configurations
 # - swX_interfaces:
 #   - this is a dict that provides the following items:
@@ -31,12 +31,12 @@
   tasks:
   - name: Construct list of allowed vlans
     set_fact:
-      global_allowed_vlans: "{{ global_allowed_vlans + [ item.id ] }}"
+      local_allowed_vlans: "{{ local_allowed_vlans + [ item.id ] }}"
     loop: "{{ global_vlans | selectattr('tagged','==',true) | list }}"
 
   - name: Print allowed vlans
     debug:
-      msg: "{{ global_allowed_vlans }}"
+      msg: "{{ local_allowed_vlans }}"
 
   - name: Configure interface as trunk
     cisco.ios.ios_config:
@@ -44,7 +44,7 @@
       lines:
       - switchport trunk encapsulation dot1q
       - switchport mode trunk
-      - switchport trunk allowed vlan {{ global_allowed_vlans | join(',') }}
+      - switchport trunk allowed vlan {{ local_allowed_vlans | join(',') }}
       - "{{ item.desc }}"
       - "{{ item.port_conf[0] }}"
       - "{{ item.port_conf[1] }}"
