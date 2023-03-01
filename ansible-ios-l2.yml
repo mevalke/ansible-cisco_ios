@@ -34,6 +34,10 @@
       global_allowed_vlans: "{{ global_allowed_vlans + [ item.id ] }}"
     loop: "{{ global_vlans | selectattr('tagged','==',true) | list }}"
 
+  - name: Print allowed vlans
+    debug:
+      msg: "{{ global_allowed_vlans }}"
+
   - name: Configure interface as trunk
     cisco.ios.ios_config:
       parents: interface {{ vars[ inventory_hostname+'_switch_interface_prefix' ] }}{{ item.name }}
