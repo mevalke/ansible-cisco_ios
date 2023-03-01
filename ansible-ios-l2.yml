@@ -28,6 +28,8 @@
   #  vars_files: vars.yml
   gather_facts: false
   connection: local
+  vars:
+    local_allowed_vlans: []
   tasks:
   - name: Construct list of allowed vlans
     set_fact:
