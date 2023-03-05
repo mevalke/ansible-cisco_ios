@@ -1,0 +1,67 @@
+global_vlans:
+- name: MGMT1201
+  id: 1201
+  subnet: 10.100.201.0/24
+  mask: 255.255.255.0
+  tagged: true
+  vswitch: vSwitch0
+  mgmt: true
+- name: LAN1101
+  id: 1101
+  subnet: 10.100.101.0/24
+  mask: 255.255.255.0
+  tagged: true
+  vswitch: vSwitch0
+  mgmt: false
+- name: LAN1102
+  id: 1102
+  subnet: 10.100.102.0/24
+  mask: 255.255.255.0
+  tagged: true
+  vswitch: vSwitch0
+  mgmt: false
+- name: DMZ1103
+  id: 1103
+  subnet: 10.100.103.0/24
+  mask: 255.255.255.0
+  tagged: true
+  vswitch: vSwitch0
+  mgmt: false
+- name: WAN
+  id: 400
+  subnet: 192.168.122.0/24
+  mask: 255.255.255.0
+  tagged: false
+  vswitch: ""
+  mgmt: false
+
+access_ports:
+- { switch: "sw1", port: "1/0", vlan: "400", desc: "fw wan" }
+- { switch: "sw1", port: "1/1", vlan: "1201", desc: "ansible" }
+- { switch: "sw1", port: "3/3", vlan: "400", desc: "operator" }
+- { switch: "sw2", port: "1/0", vlan: "400", "fw wan" }
+- { switch: "sw2", port: "1/2", vlan: "1201", "ansible" }
+- { switch: "sw2", port: "3/3", vlan: "400", desc: "operator" }
+- { switch: "sw4", port: "0/0", vlan: "400", desc: "test ws" }
+
+trunk_ports:
+- { switch: "sw1", port: "0/0", desc: "trunk to sw2 hsrp" }
+- { switch: "sw1", port: "2/1", desc: "trunk to sw3" }
+- { switch: "sw1", port: "3/1", desc: "trunk to sw4" }
+- { switch: "sw2", port: "0/0", desc: "trunk to sw1 hsrp" }
+- { switch: "sw2", port: "2/2", desc: "trunk to sw3" }
+- { switch: "sw2", port: "3/2", desc: "trunk to sw4" }
+- { switch: "sw3", port: "0/1", desc: "trunk to vmware" }
+- { switch: "sw3", port: "0/2", desc: "trunk to netapp" }
+- { switch: "sw3", port: "0/3", desc: "trunk to backup" }
+- { switch: "sw3", port: "2/1", desc: "trunk to sw1" }
+- { switch: "sw3", port: "2/2", desc: "trunk to sw2" }
+- { switch: "sw4", port: "0/1", desc: "trunk to vmware" }
+- { switch: "sw4", port: "0/2", desc: "trunk to netapp" }
+- { switch: "sw4", port: "0/3", desc: "trunk to backup" }
+- { switch: "sw4", port: "3/1", desc: "trunk to sw1" }
+- { switch: "sw4", port: "3/2", desc: "trunk to sw2" }
+
+- { switch: "sw1", port: "0/1", commands: ["description fw lan", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan 500,1201"] }
+- { switch: "sw2", port: "0/1", commands: ["description fw lan", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan 500,1201"] }
+

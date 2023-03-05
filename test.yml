@@ -1,45 +1,62 @@
 ---
-- name: Test looping switch ports
-  hosts: all 
+- name: Configure L2 interfaces on IOS switches
+  hosts: all
+  vars_files: tmpvars.yml
+  vars:
+    all_ports: []
+    allowed_vlans: []
   gather_facts: false
+  connection: local
   tasks:
-  - name: construct list of used ports for sw1
+  - name: Construct list of allowed vlans
     set_fact:
-        sw1_used_ports: "{{ sw1_used_ports + [ item.name ] }}"
-    loop: "{{ sw1_interfaces }}"
+      allowed_vlans: "{{ allowed_vlans + [ item.id ] }}"
+    loop: "{{ global_vlans | selectattr('tagged','==',true) | list }}"
 
-  - name: construct list of used ports for sw2
+  - name: Get a list of all switch ports
+    ios_command:
+      commands:
+        - show interfaces status
+    register: switch_ports
+
+  - name: Create list of all ports across all switches
     set_fact:
-      sw2_used_ports: "{{ sw2_used_ports + [ item.name ] }}"
-    loop: "{{ sw2_interfaces }}"
+      all_ports: "{{ switch_ports.stdout[0] | regex_replace('\\s+', ',') | regex_replace('^\\w+,', '') | regex_replace(',\\s+\\w+,', ',') | split(',') }}"
 
-  - name: construct list of used ports for sw3
-    set_fact:
-      sw3_used_ports: "{{ sw3_used_ports + [ item.name ] }}"
-    loop: "{{ sw3_interfaces }}"
-
-  - name: construct list of used ports for sw4
-    set_fact:
-      sw4_used_ports: "{{ sw4_used_ports + [ item.name ] }}"
-    loop: "{{ sw4_interfaces }}"
-    
-  - name: print used ports on sw1 
+  - name: Print all_ports
     debug:
-      msg: "{{ sw1_used_ports }}"
+      msg: "{{ all_ports }}"
 
-  - name: print used ports on sw2
-    debug:
-      msg: "{{ sw2_used_ports }}"
+  - name: Configure access ports
+    ios_config:
+      parents: interface GigabitEthernet{{ item.port }}
+      lines:
+        - switchport mode access
+        - switchport access vlan {{ item.vlan }}
+      host: "{{ item.switch }}"
+    loop: "{{ access_ports }}"
 
-  - name: print used ports on sw1 
-    debug:
-      msg: "{{ sw3_used_ports }}"
+  - name: Configure trunk ports
+    ios_config:
+      lines:
+        - interface GigabitEthernet{{ item.port }}
+        - switchport mode trunk
+        - switchport trunk allowed vlan {{ item.allowed_vlans }}
+      host: "{{ item.switch }}"
+    loop: "{{ trunk_ports }}"
 
-  - name: print used ports on sw1 
-    debug:
-      msg: "{{ sw4_used_ports }}"
+  - name: Configure custom ports
+    ios_config:
+      lines: "{{ item.commands }}"
+      host: "{{ item.switch }}"
+    loop: "{{ custom_ports }}"
 
-  - name: print unused ports on each switch
-    debug:
-      msg: "{{ item }}"
-    loop: "{{ vars[ inventory_hostname+'_switch_ports_all' ] | difference(vars[ inventory_hostname+'_used_ports' ]) }}"
+  - name: Shutdown unused ports
+    ios_config:
+      lines:
+        - interface {{ item }}
+        - shutdown
+      replace: block
+      backup: yes
+    when: item not in access_ports + trunk_ports + custom_ports
+    loop: "{{ all_ports }}"
