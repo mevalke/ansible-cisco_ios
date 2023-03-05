@@ -6,7 +6,7 @@
     all_ports: []
     allowed_vlans: []
   gather_facts: false
-  connection: local
+  connection: network_cli
   tasks:
   - name: Construct list of allowed vlans
     set_fact:
