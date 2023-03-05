@@ -1,12 +1,12 @@
 ---
 - name: Configure L2 interfaces on IOS switches
   hosts: all
-  vars_files: tmpvars.yml
+  # vars_files: tmpvars.yml
   vars:
     all_ports: []
     allowed_vlans: []
   gather_facts: false
-#  connection: local
+  connection: local
   tasks:
   - name: Construct list of allowed vlans
     set_fact:
