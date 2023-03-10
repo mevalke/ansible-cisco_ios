@@ -34,34 +34,44 @@ global_vlans:
   tagged: false
   vswitch: ""
   mgmt: false
-
 access_ports:
-- { switch: "sw1", port: "1/0", vlan: "400", desc: "fw wan" }
-- { switch: "sw1", port: "1/1", vlan: "1201", desc: "ansible" }
-- { switch: "sw1", port: "3/3", vlan: "400", desc: "operator" }
-- { switch: "sw2", port: "1/0", vlan: "400", "fw wan" }
-- { switch: "sw2", port: "1/2", vlan: "1201", "ansible" }
-- { switch: "sw2", port: "3/3", vlan: "400", desc: "operator" }
-- { switch: "sw4", port: "0/0", vlan: "400", desc: "test ws" }
-
+  sw1:
+    1/0: { vlan: 400, desc: "firewall wan" }
+    1/1: { vlan: 1201, desc: "ansible" }
+    3/3: { vlan: 400, desc: "operator" }
+  sw2:
+    1/0: { vlan: 400, desc: "firewall wan" }
+    1/2: { vlan: 1201, desc: "ansible" }
+    3/3: { vlan: 400, desc: "operator" }
+  sw3:
+    {}
+  sw4:
+    0/0: { vlan: 400, desc: "test ws" }
 trunk_ports:
-- { switch: "sw1", port: "0/0", desc: "trunk to sw2 hsrp" }
-- { switch: "sw1", port: "2/1", desc: "trunk to sw3" }
-- { switch: "sw1", port: "3/1", desc: "trunk to sw4" }
-- { switch: "sw2", port: "0/0", desc: "trunk to sw1 hsrp" }
-- { switch: "sw2", port: "2/2", desc: "trunk to sw3" }
-- { switch: "sw2", port: "3/2", desc: "trunk to sw4" }
-- { switch: "sw3", port: "0/1", desc: "trunk to vmware" }
-- { switch: "sw3", port: "0/2", desc: "trunk to netapp" }
-- { switch: "sw3", port: "0/3", desc: "trunk to backup" }
-- { switch: "sw3", port: "2/1", desc: "trunk to sw1" }
-- { switch: "sw3", port: "2/2", desc: "trunk to sw2" }
-- { switch: "sw4", port: "0/1", desc: "trunk to vmware" }
-- { switch: "sw4", port: "0/2", desc: "trunk to netapp" }
-- { switch: "sw4", port: "0/3", desc: "trunk to backup" }
-- { switch: "sw4", port: "3/1", desc: "trunk to sw1" }
-- { switch: "sw4", port: "3/2", desc: "trunk to sw2" }
-
-- { switch: "sw1", port: "0/1", commands: ["description fw lan", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan 500,1201"] }
-- { switch: "sw2", port: "0/1", commands: ["description fw lan", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan 500,1201"] }
-
+  sw1:
+  - [0/0, "sw2 hsrp"]
+  - [2/1, "sw3"]
+  - [3/1, "sw4"]
+  sw2:
+  - [0/0, "sw1 hsrp"]
+  - [2/2, "sw3"]
+  - [3/2, "sw4"]
+  sw3:
+  - [0/1, "esxi1"]
+  - [0/2, "netapp"]
+  - [0/3, "backup"]
+  - [2/1, "sw1"]
+  - [2/2, "sw2"]
+  sw4:
+  - [0/1, "esxi1"]
+  - [0/2, "netapp"]
+  - [0/3, "backup"]
+  - [3/1, "sw1"]
+  - [3/2, "sw2"]
+custom_ports:
+  sw1:
+    0/1: { commands: [ "description fw lan", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan 500,1201" ] }
+  sw2:
+    0/1: { commands: [ "description fw lan", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan 500,1201" ] }
+  sw3: {}
+  sw4: {}

@@ -1,62 +1,47 @@
 ---
-- name: Configure L2 interfaces on IOS switches
+- name: Configure switches
   hosts: all
-  # vars_files: tmpvars.yml
+  gather_facts: no
+  connection: local
+  vars_files: tmpvars.yml
   vars:
-    all_ports: []
     allowed_vlans: []
-  gather_facts: false
-  connection: network_cli
   tasks:
-  - name: Construct list of allowed vlans
-    set_fact:
-      allowed_vlans: "{{ allowed_vlans + [ item.id ] }}"
-    loop: "{{ global_vlans | selectattr('tagged','==',true) | list }}"
+    - name: Construct list of allowed vlans
+      set_fact:
+        allowed_vlans: "{{ allowed_vlans + [ item.id ] }}"
+      loop: "{{ global_vlans | selectattr('tagged','==',true) | list }}"
 
-  - name: Get a list of all switch ports
-    ios_command:
+    - name: Configure access ports
+      ios_config:
+        lines:
+          - "switchport mode access"
+          - "switchport access vlan {{ item.1.vlan }}"
+          - "description {{ item.1.desc }}"
+        parents: "interface GigabitEthernet{{ item.0 }}"
+      notify: "Write Config"
+      loop: "{{ access_ports[ inventory_hostname ].items() }}"
+
+    - name: Configure trunk ports
+      ios_config:
+        lines:
+          - "switchport trunk encapsulation dot1q"
+          - "switchport mode trunk"
+          - "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}"
+          - "description {{ item.1 }}"
+        parents: "interface GigabitEthernet{{ item.0 }}"
+      notify: "Write Config"
+      loop: "{{ trunk_ports[inventory_hostname] }}"
+
+    - name: Configure custom ports
+      ios_config:
+        lines: "{{ item.1.commands }}"
+        parents: "interface GigabitEthernet{{ item.0 }}"
+      notify: "Write Config"
+      loop: "{{ custom_ports[inventory_hostname].items() }}"
+
+  handlers:
+  - name: Write Config
+    cisco.ios.ios_command:
       commands:
-        - show interfaces status
-    register: switch_ports
-
-  - name: Create list of all ports across all switches
-    set_fact:
-      all_ports: "{{ switch_ports.stdout[0] | regex_replace('\\s+', ',') | regex_replace('^\\w+,', '') | regex_replace(',\\s+\\w+,', ',') | split(',') }}"
-
-  - name: Print all_ports
-    debug:
-      msg: "{{ all_ports }}"
-
-  - name: Configure access ports
-    ios_config:
-      parents: interface GigabitEthernet{{ item.port }}
-      lines:
-        - switchport mode access
-        - switchport access vlan {{ item.vlan }}
-      host: "{{ item.switch }}"
-    loop: "{{ access_ports }}"
-
-  - name: Configure trunk ports
-    ios_config:
-      lines:
-        - interface GigabitEthernet{{ item.port }}
-        - switchport mode trunk
-        - switchport trunk allowed vlan {{ item.allowed_vlans }}
-      host: "{{ item.switch }}"
-    loop: "{{ trunk_ports }}"
-
-  - name: Configure custom ports
-    ios_config:
-      lines: "{{ item.commands }}"
-      host: "{{ item.switch }}"
-    loop: "{{ custom_ports }}"
-
-  - name: Shutdown unused ports
-    ios_config:
-      lines:
-        - interface {{ item }}
-        - shutdown
-      replace: block
-      backup: yes
-    when: item not in access_ports + trunk_ports + custom_ports
-    loop: "{{ all_ports }}"
+      - write
