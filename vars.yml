@@ -1,11 +1,4 @@
 ---
-global_ansible_connection: ansible.netcommon.network_cli
-global_ansible_user: ansible
-global_ansible_password: ansible
-global_ansible_become: true
-global_ansible_become_method: enable
-global_ansible_become_password: enansible
-global_ansible_network_os: ios
 allowed_vlans: []
 sw1_hsrp: 150
 sw2_hsrp: 100
