@@ -1,0 +1,29 @@
+[switches]
+sw1     ansible_host=10.100.201.11
+sw2     ansible_host=10.100.201.12
+sw3     ansible_host=10.100.201.13
+sw4     ansible_host=10.100.201.14
+
+[switches:vars]
+# ansible_connection=ansible.netcommon.network_cli
+ansible_user=ansible
+ansible_password=ansible
+ansible_become=true
+ansible_become_method=enable
+ansible_become_password=enansible
+ansible_network_os=ios
+ansible_ssh_common_args="-o HostKeyAlgorithms=ssh-rsa -o KexAlgorithms=diffie-hellman-group1-sha1 -o Ciphers=aes256-cbc,3des-cbc -o MACs=hmac-sha1,hmac-sha1-96"
+
+[core_switches]
+sw1     ansible_host=10.100.201.11
+sw2     ansible_host=10.100.201.12
+
+[core_switches:vars]
+# ansible_connection=ansible.netcommon.network_cli
+ansible_user=ansible
+ansible_password=ansible
+ansible_become=true
+ansible_become_method=enable
+ansible_become_password=enansible
+ansible_network_os=ios
+ansible_ssh_common_args="-o HostKeyAlgorithms=ssh-rsa -o KexAlgorithms=diffie-hellman-group1-sha1 -o Ciphers=aes256-cbc,3des-cbc -o MACs=hmac-sha1,hmac-sha1-96"

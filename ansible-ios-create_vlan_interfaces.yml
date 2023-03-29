@@ -1,23 +1,9 @@
-# This playbook loops through a list of dictionaries and creates an SVI per item.
-#
-# Please see vars.yml for a valid variable configuration.
-#
-# Variables:
-# - global_vlans:
-#   - this is a list of dictionaries that provides the following required values:
-#     - id
-#     - subnet
-#     - mask
-#   - only the items that have trunk attribute set to true get selected and respective vlans created  
-# - inventory_hostname+'_ip' (i.e. sw1_ip, sw2_ip and so on)
-#   - this is a string that provides the last octet of the svi ip
-#     - first three octets are extracted from the subnet variable item using the split filter
 ---
-- name: Create one or multiple VLAN interfaces
-  hosts: all
-  #  vars_files: vars.yml
-  gather_facts: false
+- name: Configure switches
+  hosts: switches
+  gather_facts: no
   connection: local
+  vars_files: vars.yml
   tasks:
   - name: Create VLAN interface
     cisco.ios.ios_config:

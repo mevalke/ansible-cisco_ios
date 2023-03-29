@@ -1,32 +1,15 @@
-# This playbook loops through a list of dictionaries and creates HSRP configurations per itme.
-# - only the items that have trunk attribute set to true get selected
-# - virtual IP set to xxx.xxx.xxx.254
-# - priority set to the value defined in the vars file 
-# - preempt enabled
-#
-# Please see vars.yml for a valid variable configuration.
-#
-# Variables:
-# - global_vlans:
-#   - this is a dictionary that contains the following required items:
-#     - subnet
-#       - this is a string that is splitted in order to get the first three octets and suffixed with .254 in order to construct the virtual IP
-#     - inventory_hostname+'_hsrp' (i.e. sw1_hsrp, sw2_hsrp and so on)
-#       - this is a string that provides the hsrp priority value
-#
-# Please note that this playbook configures only the standby values. Port conecting the HA pair is configured using the L2 Interface playbook.
 ---
-- name: Configure HSRP on core switches
-  hosts: all
-  #  vars_files: vars.yml
-  gather_facts: false
+- name: Configure switches
+  hosts: core_switches
+  gather_facts: no
   connection: local
+  vars_files: vars.yml
   tasks:
   - name: Configure standby
     cisco.ios.ios_config:
       parents: interface vlan {{ item.id }}
       lines:
-      - standby 1 ip {{ item.subnet.split('.')[0] }}.{{ item.subnet.split('.')[1] }}.{{ item.subnet.split('.')[2] }}.254
+      - standby 1 ip {{ item.subnet.split('.')[0] }}.{{ item.subnet.split('.')[1] }}.{{ item.subnet.split('.')[2] }}.254      
       - standby 1 priority {{ vars[ inventory_hostname+'_hsrp' ] }}
       - standby 1 preempt
     notify: "Write Config"

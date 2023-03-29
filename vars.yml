@@ -1,157 +1,91 @@
-global_vlans:
-- name: MGMT1201
-  id: 1201
-  subnet: 10.100.201.0/24
-  mask: 255.255.255.0
-  tagged: true
-  vswitch: vSwitch0
-  mgmt: true
-- name: LAN1101
-  id: 1101
-  subnet: 10.100.101.0/24
-  mask: 255.255.255.0
-  tagged: true
-  vswitch: vSwitch0
-  mgmt: false
-- name: LAN1102
-  id: 1102
-  subnet: 10.100.102.0/24
-  mask: 255.255.255.0
-  tagged: true
-  vswitch: vSwitch0
-  mgmt: false
-- name: DMZ1103
-  id: 1103
-  subnet: 10.100.103.0/24
-  mask: 255.255.255.0
-  tagged: true
-  vswitch: vSwitch0
-  mgmt: false
-- name: WAN
-  id: 400
-  subnet: 192.168.122.0/24
-  mask: 255.255.255.0
-  tagged: false
-  vswitch: ""
-  mgmt: false
-
-sw1_switch_ports_all: [ 0/0,0/1,0/2,0/3,1/0,1/1,1/2,1/3,2/0,2/1,2/2,2/3,3/0,3/1,3/2,3/3 ]
-sw2_switch_ports_all: [ 0/0,0/1,0/2,0/3,1/0,1/1,1/2,1/3,2/0,2/1,2/2,2/3,3/0,3/1,3/2,3/3 ]
-sw3_switch_ports_all: [ 0/0,0/1,0/2,0/3,1/0,1/1,1/2,1/3,2/0,2/1,2/2,2/3,3/0,3/1,3/2,3/3 ]
-sw4_switch_ports_all: [ 0/0,0/1,0/2,0/3,1/0,1/1,1/2,1/3,2/0,2/1,2/2,2/3,3/0,3/1,3/2,3/3 ]
-sw1_switch_interface_prefix: GigabitEthernet
-sw2_switch_interface_prefix: GigabitEthernet
-sw3_switch_interface_prefix: GigabitEthernet
-sw4_switch_interface_prefix: GigabitEthernet
+---
+global_ansible_connection: ansible.netcommon.network_cli
+global_ansible_user: ansible
+global_ansible_password: ansible
+global_ansible_become: true
+global_ansible_become_method: enable
+global_ansible_become_password: enansible
+global_ansible_network_os: ios
+allowed_vlans: []
+sw1_hsrp: 150
+sw2_hsrp: 100
 sw1_ip: 11
 sw2_ip: 12
 sw3_ip: 13
 sw4_ip: 14
-sw_tagged_ports: "{{ vars[ inventory_hostname+'_interfaces' ] | selectattr('trunk','==',true) }}"
-sw_untagged_ports: "{{ vars[ inventory_hostname+'_interfaces' ] | selectattr('trunk','==',false) }}"
-sw1_hsrp: 150
-sw2_hsrp: 100
+global_vlans:
+- { name: MGMT1201, id: 1201, subnet: 10.100.201.0/24, mask: 255.255.255.0, tagged: true, vswitch: vSwitch0, mgmt: true }
+- { name: LAN1101, id: 1101, subnet: 10.100.101.0/24, mask: 255.255.255.0, tagged: true, vswitch: vSwitch0, mgmt: false }
+- { name: LAN1102, id: 1102, subnet: 10.100.102.0/24, mask: 255.255.255.0, tagged: true, vswitch: vSwitch0, mgmt: false }
+- { name: DMZ1103, id: 1103, subnet: 10.100.103.0/24, mask: 255.255.255.0, tagged: true, vswitch: vSwitch0, mgmt: false }
+- { name: WAN, id: 400, subnet: 192.168.122.0/24, mask: 255.255.255.0, tagged: false, vswitch: "", mgmt: false }
+- { name: LINKNET, id: 500, subnet: 10.100.251.0/24, mask: 255.255.255.0, tagged: false, vswitch: "", mgmt: false }
 sw1_interfaces:
-- name: 0/0
-  desc: description sw2 hsrp
-  trunk: true
-  port_conf: ['','','','']
-- name: 0/1
-  desc: description fw lan
-  trunk: true
-  port_conf: ['','','','']
-- name: 1/0
-  desc: description fw wan
-  trunk: false
-  port_conf: [switchport access vlan 400,'','','']
-- name: 1/1
-  desc: description ansible
-  trunk: false
-  port_conf: [switchport access vlan 1201,'','','']
-- name: 2/1
-  desc: description sw3
-  trunk: true
-  port_conf: ['','','','']
-- name: 3/1
-  desc: description sw4
-  trunk: true
-  port_conf: ['','','','']
-- name: 3/3
-  desc: description operator
-  trunk: false
-  port_conf: [switchport access vlan 400,'','','']
+- [ "interface GigabitEthernet0/0", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}", "description SW2 HSRP" ]
+- [ "interface GigabitEthernet0/1", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan 500,1201", "description FW LAN" ]
+- [ "interface GigabitEthernet0/2", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet0/3", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet1/0", "no switchport trunk allowed vlan", "no switchport mode trunk", "no switchport trunk encapsulation", "switchport mode access", "switchport access vlan 400", "description Firewall WAN" ]
+- [ "interface GigabitEthernet1/1", "no switchport trunk allowed vlan", "no switchport mode trunk", "no switchport trunk encapsulation", "switchport mode access", "switchport access vlan 1201", "description Ansible" ]
+- [ "interface GigabitEthernet1/2", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet1/3", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet2/0", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet2/1", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}", "description SW3" ]
+- [ "interface GigabitEthernet2/2", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet2/3", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet3/0", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet3/1", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}", "description SW4" ]
+- [ "interface GigabitEthernet3/2", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet3/3", "no switchport trunk allowed vlan", "no switchport mode trunk", "no switchport trunk encapsulation", "switchport mode access", "switchport access vlan 400", "description Operator" ]
 sw2_interfaces:
-- name: 0/0
-  desc: description sw1 hsrp
-  trunk: true
-  port_conf: ['','','','']
-- name: 0/1
-  desc: description fw lan
-  trunk: true
-  port_conf: ['','','','']
-- name: 1/0
-  desc: description fw wan
-  trunk: false
-  port_conf: [switchport access vlan 400,'','','']
-- name: 1/2
-  desc: description ansible
-  trunk: false
-  port_conf: [switchport access vlan 1201,'','','']
-- name: 2/2
-  desc: description sw3
-  trunk: true
-  port_conf: ['','','','']
-- name: 3/2
-  desc: description sw4
-  trunk: true
-  port_conf: ['','','','']
-- name: 3/3
-  desc: description operator
-  trunk: false
-  port_conf: [switchport access vlan 400,'','','']
+- [ "interface GigabitEthernet0/0", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}", "description SW2 HSRP" ]
+- [ "interface GigabitEthernet0/1", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan 500,1201", "description FW LAN" ]
+- [ "interface GigabitEthernet0/2", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet0/3", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet1/0", "no switchport trunk allowed vlan", "no switchport mode trunk", "no switchport trunk encapsulation", "switchport mode access", "switchport access vlan 400", "description Firewall WAN" ]
+- [ "interface GigabitEthernet1/1", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet1/2", "no switchport trunk allowed vlan", "no switchport mode trunk", "no switchport trunk encapsulation", "switchport mode access", "switchport access vlan 1201", "description Ansible" ]
+- [ "interface GigabitEthernet1/3", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet2/0", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet2/1", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet2/2", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}", "description SW3" ]
+- [ "interface GigabitEthernet2/3", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet3/0", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet3/1", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet3/2", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}", "description SW4" ]
+- [ "interface GigabitEthernet3/3", "no switchport trunk allowed vlan", "no switchport mode trunk", "no switchport trunk encapsulation", "switchport mode access", "switchport access vlan 400", "description Operator" ]
 sw3_interfaces:
-- name: 0/1
-  desc: description vmware
-  trunk: true
-  port_conf: ['','','','']
-- name: 0/2
-  desc: description netapp
-  trunk: true
-  port_conf: ['','','','']
-- name: 0/3
-  desc: description backup
-  trunk: true
-  port_conf: ['','','','']
-- name: 2/1
-  desc: description sw1
-  trunk: true
-  port_conf: ['','','','']
-- name: 2/2
-  desc: description sw2
-  trunk: true
-  port_conf: ['','','','']
+- [ "interface GigabitEthernet0/0", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet0/1", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}", "description ESXI1" ]
+- [ "interface GigabitEthernet0/2", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}", "description NetApp" ]
+- [ "interface GigabitEthernet0/3", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}", "description Backup" ]
+- [ "interface GigabitEthernet1/0", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet1/1", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet1/2", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet1/3", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet2/0", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet2/1", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}", "description SW1" ]
+- [ "interface GigabitEthernet2/2", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}", "description SW2" ]
+- [ "interface GigabitEthernet2/3", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet3/0", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet3/1", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet3/2", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet3/3", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
 sw4_interfaces:
-- name: 0/0
-  desc: description test ws
-  trunk: false
-  port_conf: [switchport access vlan 1101,'','','']
-- name: 0/1
-  desc: description vmware
-  trunk: true
-  port_conf: ['','','','']
-- name: 0/2
-  desc: description netapp
-  trunk: true
-  port_conf: ['','','','']
-- name: 0/3
-  desc: description backup
-  trunk: true
-  port_conf: ['','','','']
-- name: 3/1
-  desc: description sw1
-  trunk: true
-  port_conf: ['','','','']
-- name: 3/2
-  desc: description sw2
-  trunk: true
-  port_conf: ['','','','']
+- [ "interface GigabitEthernet0/0", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet0/1", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}" ]
+- [ "interface GigabitEthernet0/2", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}" ]
+- [ "interface GigabitEthernet0/3", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}" ]
+- [ "interface GigabitEthernet1/0", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet1/1", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet1/2", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet1/3", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet2/0", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet2/1", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet2/2", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet2/3", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet3/0", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+- [ "interface GigabitEthernet3/1", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}" ]
+- [ "interface GigabitEthernet3/2", "switchport trunk encapsulation dot1q", "switchport mode trunk", "switchport trunk allowed vlan {{ allowed_vlans | join(',') }}" ]
+- [ "interface GigabitEthernet3/3", "no switchport mode", "no switchport trunk allowed vlan", "no switchport trunk encapsulation", "shutdown", "description admin shut" ]
+

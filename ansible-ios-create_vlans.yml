@@ -1,18 +1,9 @@
-# This playbook loops through the global_vlans dictionary and creates vlans per item.
-#
-# Please see vars.yml for a valid variable configuration.
-#
-# Variables:
-# - global_vlans:
-#   - this is a dictionary that provides the following required values:
-#     - id
-#     - name
 ---
-- name: Create one or multiple VLANs
-  hosts: all
-  #  vars_files: vars.yml
-  gather_facts: false
+- name: Configure switches
+  hosts: switches
+  gather_facts: no
   connection: local
+  vars_files: vars.yml
   tasks:
   - name: Create VLAN
     cisco.ios.ios_config:
